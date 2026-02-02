@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"\nimport sys\nsys.path.insert\\(0, ''.''\\)\n\nprint\\(''Testing application functionality after fixing type hints...''\\)\n\n# Test the application modules directly\nfrom src.models import Task, validate_task_data\nfrom src.task_manager import TaskManager\nfrom src.utils import validate_title, validate_description, validate_task_id, validate_menu_choice\nfrom src.ui import display_tasks, display_error, display_success, display_info\n\n# Test TaskManager with invalid inputs \\(to ensure validation still works\\)\ntm = TaskManager\\(\\)\ntm.add_task\\(''Test Task'', ''Description''\\)\n\n# Test that invalid task IDs are handled correctly\nresult = tm.get_task\\(''invalid''\\)  # Should return None\nprint\\(f''✓ get_task with invalid ID returns: {result}''\\)\n\nresult = tm.update_task\\(''invalid'', ''New Title''\\)  # Should return False\nprint\\(f''✓ update_task with invalid ID returns: {result}''\\)\n\nresult = tm.delete_task\\(''invalid''\\)  # Should return False\nprint\\(f''✓ delete_task with invalid ID returns: {result}''\\)\n\nresult = tm.toggle_task_completion\\(''invalid''\\)  # Should return False\nprint\\(f''✓ toggle_task_completion with invalid ID returns: {result}''\\)\n\nprint\\(''All validation tests passed!''\\)\nprint\\(''Application is working correctly with the type hint fixes!''\\)\n\")",
+      "Bash(source mcp_env/bin/activate && python .claude/mcp/server.py)",
+      "Bash(python .claude/mcp/server.py)",
+      "Bash(.claude/mcp/start.sh)",
+      "Bash(docker *)",
+      "Bash(git *)",
+      "Bash(psycopg2.connect *)",
+      "Bash(asyncpg.connect *)",
+      "Bash(npx neonctl@latest projects create --name todo-app)",
+      "Bash(ssh-keygen -t ed25519 -C \"muhammadyasir678@gmail.com\")"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "specifyplus-mcp"
+  ]
+}
