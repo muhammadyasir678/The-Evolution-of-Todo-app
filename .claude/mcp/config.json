@@ -1,0 +1,99 @@
+{
+  "name": "specifyplus-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for the Todo app development with integrated tools",
+  "capabilities": [
+    {
+      "name": "filesystem",
+      "description": "File system operations for reading, writing, and managing files",
+      "methods": [
+        "fs.read",
+        "fs.write",
+        "fs.list",
+        "fs.create_dir",
+        "fs.delete"
+      ]
+    },
+    {
+      "name": "github",
+      "description": "GitHub operations for repository management, issues, and pull requests",
+      "methods": [
+        "github.clone",
+        "github.commit",
+        "github.push",
+        "github.pull_request",
+        "github.issue_create"
+      ]
+    },
+    {
+      "name": "postgres",
+      "description": "PostgreSQL database operations for the Todo app backend",
+      "methods": [
+        "postgres.connect",
+        "postgres.query",
+        "postgres.execute",
+        "postgres.migrate"
+      ]
+    },
+    {
+      "name": "fetch",
+      "description": "HTTP fetch operations for API calls and web requests",
+      "methods": [
+        "fetch.get",
+        "fetch.post",
+        "fetch.put",
+        "fetch.delete"
+      ]
+    },
+    {
+      "name": "kubernetes",
+      "description": "Kubernetes operations for container orchestration",
+      "methods": [
+        "k8s.deploy",
+        "k8s.scale",
+        "k8s.logs",
+        "k8s.status"
+      ]
+    },
+    {
+      "name": "docker",
+      "description": "Docker operations for container management",
+      "methods": [
+        "docker.build",
+        "docker.run",
+        "docker.push",
+        "docker.status"
+      ]
+    },
+    {
+      "name": "brave-search",
+      "description": "Brave Search API for web search capabilities",
+      "methods": [
+        "search.web"
+      ]
+    }
+  ],
+  "resources": {
+    "python_project": {
+      "type": "filesystem/directory",
+      "description": "Root directory of the Todo console application",
+      "path": "./phase-1"
+    },
+    "api_contracts": {
+      "type": "filesystem/directory",
+      "description": "API contract definitions for the Todo app",
+      "path": "./specs/001-full-stack-app/contracts"
+    }
+  },
+  "endpoints": {
+    "health": "/health",
+    "capabilities": "/capabilities",
+    "resources": "/resources"
+  },
+  "settings": {
+    "port": 8080,
+    "host": "localhost",
+    "cors_enabled": true,
+    "authentication_required": false
+  }
+}

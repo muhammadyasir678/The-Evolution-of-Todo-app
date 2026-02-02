@@ -1,0 +1,22 @@
+{
+  "servers": [
+    {
+      "name": "specifyplus-mcp",
+      "url": "http://localhost:8080",
+      "capabilities": [
+        "filesystem",
+        "github",
+        "postgres",
+        "fetch",
+        "kubernetes",
+        "docker",
+        "brave-search"
+      ],
+      "enabled": true,
+      "timeout": 30000
+    }
+  ],
+  "default_server": "specifyplus-mcp",
+  "connection_retry_attempts": 3,
+  "connection_retry_delay": 1000
+}

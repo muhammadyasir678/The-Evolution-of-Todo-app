@@ -1,0 +1,21 @@
+{
+  "servers": [
+    {
+      "name": "specifyplus-mcp",
+      "command": [
+        "bash",
+        "-c",
+        "cd $(dirname \"$0\") && source ../mcp_env/bin/activate && python .claude/mcp/server.py"
+      ],
+      "capabilities": [
+        "experimental-tool-user:filesystem",
+        "experimental-tool-user:github",
+        "experimental-tool-user:postgres",
+        "experimental-tool-user:fetch",
+        "experimental-tool-user:kubernetes",
+        "experimental-tool-user:docker",
+        "experimental-tool-user:brave-search"
+      ]
+    }
+  ]
+}
