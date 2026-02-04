@@ -36,8 +36,6 @@ const SignInPage = () => {
 
       console.log('Sign in response status:', response.status); // Debug log
 
-      const data = await response.json();
-
       const responseJson = await response.json();
 
       if (!response.ok) {
