@@ -30,7 +30,7 @@ const SignUpPage = () => {
 
     try {
       // Call the backend API for signup
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://muhammadyasir786-backend.hf.space';
       const fullUrl = `${BACKEND_URL}/auth/signup`;
 
       console.log('Making request to:', fullUrl); // Debug log

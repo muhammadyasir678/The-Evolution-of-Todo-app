@@ -2,7 +2,7 @@ import { Task, CreateTaskRequest, UpdateTaskRequest, ApiResponse } from './types
 import { useSession } from './auth';
 
 // Base API URL from environment
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://muhammadyasir786-backend.hf.space';
 
 // Generic API request function
 async function apiRequest<T>(

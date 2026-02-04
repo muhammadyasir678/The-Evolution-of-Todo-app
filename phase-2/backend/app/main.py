@@ -14,6 +14,7 @@ origins = [
     "http://localhost:3001",  # Alternative Next.js port
     "http://127.0.0.1:3000",  # Alternative localhost
     "http://127.0.0.1:3001",  # Alternative localhost
+    "https://the-evolution-of-todo-app-mu.vercel.app",  # Deployed frontend
 ]
 
 # Add CORS middleware
@@ -24,7 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     # Additional headers that might be needed
-    allow_origin_regex=r"https://.*\.vercel\.app",  # For Vercel deployments
+    allow_origin_regex=r"https://the-evolution-of-todo-app-mu.vercel.app",  # For Vercel deployments
 )
 
 # Include the auth and task routes
