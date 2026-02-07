@@ -1,0 +1,323 @@
+# Backend API Contract for Todo App with AI Chatbot
+openapi: 3.0.3
+info:
+  title: Todo App Backend API
+  description: API for the Todo application with AI chatbot functionality
+  version: 1.0.0
+  contact:
+    name: Development Team
+    email: team@example.com
+servers:
+  - url: http://backend-service:8000
+    description: Backend service in Kubernetes cluster
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Check if the backend service is running
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-02-05T10:00:00Z"
+
+  /todos:
+    get:
+      summary: Get all todos
+      description: Retrieve all todo items for the authenticated user
+      responses:
+        '200':
+          description: Successfully retrieved todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create a new todo
+      description: Add a new todo item to the user's list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTodoRequest'
+      responses:
+        '201':
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /todos/{id}:
+    get:
+      summary: Get a specific todo
+      description: Retrieve a specific todo item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update a todo
+      description: Modify an existing todo item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodoRequest'
+      responses:
+        '200':
+          description: Todo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a todo
+      description: Remove a todo item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Todo deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /chat/completions:
+    post:
+      summary: AI Chatbot Completion
+      description: Get AI-generated response for user input
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Successful AI response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  schemas:
+    Todo:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the todo
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          description: Title of the todo
+          example: "Complete project documentation"
+        description:
+          type: string
+          description: Optional detailed description
+          example: "Write documentation for the Kubernetes deployment"
+        completed:
+          type: boolean
+          description: Whether the todo is completed
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the todo was created
+          example: "2026-02-05T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the todo was last updated
+          example: "2026-02-05T10:00:00Z"
+
+    CreateTodoRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the new todo
+          example: "Learn Kubernetes"
+        description:
+          type: string
+          description: Optional description
+          example: "Study Kubernetes concepts and deployment strategies"
+
+    UpdateTodoRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Updated title
+          example: "Master Kubernetes"
+        description:
+          type: string
+          description: Updated description
+          example: "Deep dive into Kubernetes deployment strategies"
+        completed:
+          type: boolean
+          description: Updated completion status
+          example: true
+
+    ChatCompletionRequest:
+      type: object
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          description: Conversation history
+        model:
+          type: string
+          description: AI model to use
+          default: "gpt-4"
+          example: "gpt-4o-mini"
+
+    Message:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system]
+          description: Role of the message sender
+          example: "user"
+        content:
+          type: string
+          description: Content of the message
+          example: "What is Kubernetes?"
+
+    ChatCompletionResponse:
+      type: object
+      required:
+        - id
+        - choices
+        - created
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the response
+          example: "chatcmpl-1234567890"
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+                example: 0
+              message:
+                $ref: '#/components/schemas/Message'
+              finish_reason:
+                type: string
+                example: "stop"
+        created:
+          type: integer
+          description: Unix timestamp of response creation
+          example: 1704230400
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication required"
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid request parameters"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Resource not found"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

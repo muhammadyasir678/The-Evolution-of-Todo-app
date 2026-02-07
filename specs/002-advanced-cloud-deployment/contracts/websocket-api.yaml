@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: WebSocket Task Update API
+  description: WebSocket API for real-time task updates and synchronization
+  version: 1.0.0
+paths:
+  /ws/{user_id}:
+    post:
+      summary: Establish WebSocket connection for real-time updates
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+      responses:
+        '101':
+          description: Switching to WebSocket protocol
+          headers:
+            Upgrade:
+              schema:
+                type: string
+                example: websocket
+            Connection:
+              schema:
+                type: string
+                example: Upgrade
+components:
+  schemas:
+    TaskUpdateEvent:
+      type: object
+      required:
+        - event_type
+        - task_data
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum: [created, updated, completed, deleted]
+          description: Type of task event
+        task_data:
+          $ref: '#/components/schemas/Task'
+        timestamp:
+          type: string
+          format: date-time
+          description: When the event occurred
+    Task:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - completed
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique task identifier
+        user_id:
+          type: string
+          description: Owner user identifier
+        title:
+          type: string
+          maxLength: 255
+          description: Task title
+        description:
+          type: string
+          description: Optional task description
+        completed:
+          type: boolean
+          description: Whether the task is completed
+        created_at:
+          type: string
+          format: date-time
+          description: When the task was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the task was last updated
+        priority:
+          type: string
+          enum: [high, medium, low]
+          description: Task priority level
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+          description: List of tags associated with the task
+          maxItems: 10
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: Due date and time for the task
+        reminder_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time when reminder should be sent (UTC)
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly]
+          nullable: true
+          description: Pattern for recurring tasks
+        recurrence_interval:
+          type: integer
+          nullable: true
+          minimum: 1
+          description: Interval for recurrence (e.g., every 2 weeks)
+        parent_task_id:
+          type: integer
+          nullable: true
+          description: ID of parent task if this is a recurrence
+    ErrorMessage:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+        details:
+          type: object
+          description: Additional error details

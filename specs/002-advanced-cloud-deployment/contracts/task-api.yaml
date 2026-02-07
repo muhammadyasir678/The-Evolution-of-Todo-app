@@ -1,0 +1,424 @@
+openapi: 3.0.3
+info:
+  title: Advanced Todo Task API
+  description: API for managing tasks with advanced features like recurrence, due dates, priorities, and tags
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.todoapp.com
+    description: Production server
+paths:
+  /api/{user_id}/tasks:
+    get:
+      summary: Get tasks for a user with filtering and sorting
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: priority
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [high, medium, low]
+          description: Filter by priority level(s)
+        - name: tags
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter by tag(s)
+        - name: due_after
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Filter tasks with due date after this time
+        - name: due_before
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Filter tasks with due date before this time
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [completed, pending, all]
+            default: all
+          description: Filter by completion status
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [due_date, priority, created_date, title]
+            default: created_date
+          description: Field to sort by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+          description: Number of tasks to return
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Number of tasks to skip
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  total_count:
+                    type: integer
+                  filtered_count:
+                    type: integer
+        '400':
+          description: Bad request - invalid parameters
+        '404':
+          description: User not found
+    post:
+      summary: Create a new task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request - invalid input
+        '404':
+          description: User not found
+  /api/{user_id}/tasks/search:
+    get:
+      summary: Search tasks by keyword
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Number of tasks to return
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  query:
+                    type: string
+                  total_count:
+                    type: integer
+        '400':
+          description: Bad request - invalid parameters
+  /api/{user_id}/tasks/{task_id}:
+    get:
+      summary: Get a specific task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Task identifier
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+    put:
+      summary: Update a task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Task identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request - invalid input
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Task identifier
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+  /api/{user_id}/tags:
+    get:
+      summary: Get all tags for a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
+      responses:
+        '200':
+          description: List of user's tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: User not found
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - completed
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique task identifier
+        user_id:
+          type: string
+          description: Owner user identifier
+        title:
+          type: string
+          maxLength: 255
+          description: Task title
+        description:
+          type: string
+          description: Optional task description
+        completed:
+          type: boolean
+          description: Whether the task is completed
+        created_at:
+          type: string
+          format: date-time
+          description: When the task was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the task was last updated
+        priority:
+          type: string
+          enum: [high, medium, low]
+          description: Task priority level
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+          description: List of tags associated with the task
+          maxItems: 10
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: Due date and time for the task
+        reminder_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time when reminder should be sent (UTC)
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly]
+          nullable: true
+          description: Pattern for recurring tasks
+        recurrence_interval:
+          type: integer
+          nullable: true
+          minimum: 1
+          description: Interval for recurrence (e.g., every 2 weeks)
+        parent_task_id:
+          type: integer
+          nullable: true
+          description: ID of parent task if this is a recurrence
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          description: Task title
+        description:
+          type: string
+          description: Optional task description
+        priority:
+          type: string
+          enum: [high, medium, low]
+          default: medium
+          description: Task priority level
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+          maxItems: 10
+          description: List of tags to associate with the task
+        due_date:
+          type: string
+          format: date-time
+          description: Due date and time for the task
+        reminder_time:
+          type: integer
+          minimum: 0
+          description: Number of seconds before due date for reminder
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly]
+          description: Pattern for recurring tasks
+        recurrence_interval:
+          type: integer
+          minimum: 1
+          default: 1
+          description: Interval for recurrence (e.g., every 2 weeks)
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          description: Updated task title
+        description:
+          type: string
+          description: Updated task description
+        completed:
+          type: boolean
+          description: Updated completion status
+        priority:
+          type: string
+          enum: [high, medium, low]
+          description: Updated priority level
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+          maxItems: 10
+          description: Updated list of tags
+        due_date:
+          type: string
+          format: date-time
+          description: Updated due date and time
+        reminder_time:
+          type: integer
+          minimum: 0
+          description: Number of seconds before due date for reminder
