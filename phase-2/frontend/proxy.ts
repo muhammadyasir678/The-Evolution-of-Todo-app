@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Define protected routes
-const protectedRoutes = ['/tasks'];
+const protectedRoutes = ['/tasks', '/chat'];
 
 export function proxy(request: NextRequest) {
   // For now, we'll implement a basic check
