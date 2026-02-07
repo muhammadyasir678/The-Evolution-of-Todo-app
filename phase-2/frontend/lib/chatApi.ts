@@ -4,8 +4,6 @@
  * Extracts JWT from Better Auth and makes POST request to /api/{user_id}/chat
  */
 
-import { getCurrentUserToken } from './auth'; // Placeholder for auth utility
-
 interface SendMessageParams {
   conversation_id: number | null;
   message: string;
