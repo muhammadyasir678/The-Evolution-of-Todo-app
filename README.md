@@ -1,94 +1,36 @@
-# Todo Application - Full-Stack Web Application
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This is a full-stack web application with user authentication and task management functionality. The system consists of a Next.js frontend with Better Auth integration and a FastAPI backend with JWT authentication, connected to a Neon Serverless PostgreSQL database. The application provides secure, isolated task management for each authenticated user with responsive UI design.
+## Getting Started
 
-## Architecture
+First, run the development server:
 
-- **Frontend**: Next.js 16+ with App Router, Tailwind CSS, Better Auth
-- **Backend**: FastAPI with Python 3.13+, SQLModel ORM
-- **Database**: Neon Serverless PostgreSQL
-- **Authentication**: Better Auth with JWT tokens
-
-## Features
-
-- User registration and authentication
-- Secure task management with user isolation
-- Create, read, update, and delete tasks
-- Mark tasks as complete/incomplete
-- Responsive design for mobile and desktop
-- Proper error handling and validation
-
-## Setup
-
-### Prerequisites
-
-- Node.js 18+ for frontend
-- Python 3.13+ for backend
-- PostgreSQL-compatible database (Neon Serverless PostgreSQL)
-
-### Backend Setup
-
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-uv pip install -r requirements.txt
-```
-Or with pip:
-```bash
-pip install -r requirements.txt
-```
-
-3. Set up environment variables in `.env`:
-```env
-DATABASE_URL=postgresql://username:password@host:port/database
-BETTER_AUTH_SECRET=your-secret-key-here
-CORS_ORIGINS=http://localhost:3000
-```
-
-4. Initialize the database:
-```bash
-python -c "from app.database import engine, create_db_and_tables; create_db_and_tables()"
-```
-
-5. Run the backend:
-```bash
-python app/main.py
-```
-Or with uvicorn:
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables in `.env.local`:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-BETTER_AUTH_SECRET=your-secret-key-here
-BETTER_AUTH_URL=http://localhost:3000
-```
-
-4. Run the development server:
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## Running the Application
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. Start the backend server on port 8000
-2. Start the frontend server on port 3000
-3. Access the application at http://localhost:3000
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
