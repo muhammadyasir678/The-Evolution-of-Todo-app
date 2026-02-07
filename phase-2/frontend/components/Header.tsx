@@ -62,7 +62,23 @@ const Header: React.FC<HeaderProps> = ({ userEmail: initialUserEmail, userName: 
           {userName && <p className="text-sm opacity-80">Welcome, {userName}</p>}
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6">
+          {/* Navigation to different sections */}
+          <nav className="flex space-x-4">
+            <a
+              href="/tasks"
+              className="hover:text-indigo-200 transition-colors duration-200"
+            >
+              Tasks
+            </a>
+            <a
+              href="/chat"
+              className="hover:text-indigo-200 transition-colors duration-200"
+            >
+              AI Chat
+            </a>
+          </nav>
+
           {userEmail && (
             <span className="text-sm opacity-90">{userEmail}</span>
           )}
