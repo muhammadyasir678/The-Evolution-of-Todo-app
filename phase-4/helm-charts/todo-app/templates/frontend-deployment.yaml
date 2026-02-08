@@ -1,0 +1,51 @@
+# Task ID: T314, T335, T336
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.frontend.service.port }}
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: {{ .Values.frontend.env.NEXT_PUBLIC_API_URL | quote }}
+        - name: NODE_ENV
+          value: "production"
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.config.name }}
+        - secretRef:
+            name: todo-secrets
+        resources:
+          requests:
+            memory: {{ .Values.frontend.resources.requests.memory | quote }}
+            cpu: {{ .Values.frontend.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.frontend.resources.limits.memory | quote }}
+            cpu: {{ .Values.frontend.resources.limits.cpu | quote }}
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: {{ .Values.frontend.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: {{ .Values.frontend.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

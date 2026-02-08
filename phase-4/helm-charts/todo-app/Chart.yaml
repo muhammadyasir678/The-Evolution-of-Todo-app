@@ -1,0 +1,7 @@
+# Task ID: T313
+apiVersion: v2
+name: todo-app
+description: A Helm chart for deploying the Todo application with AI chatbot functionality
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
