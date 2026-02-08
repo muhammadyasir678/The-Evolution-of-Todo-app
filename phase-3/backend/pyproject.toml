@@ -1,0 +1,31 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Backend for the AI-Powered Todo Chatbot with FastAPI, SQLModel, and OpenAI Agents"
+authors = [{ name = "Developer", email = "dev@example.com" }]
+license = { text = "MIT" }
+
+dependencies = [
+    "fastapi>=0.104.1",
+    "sqlmodel>=0.0.8",
+    "psycopg2-binary>=2.9.7",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "uvicorn>=0.24.0",
+    "python-multipart>=0.0.6",
+    "pydantic-settings>=2.1.0",
+    "bcrypt>=4.0.0",
+    "better-auth>=0.0.1b11",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "httpx>=0.25.2",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
