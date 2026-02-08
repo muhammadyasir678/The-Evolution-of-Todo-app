@@ -69,6 +69,7 @@ phase-4/
 │       ├── Chart.yaml
 │       ├── values.yaml
 │       └── templates/
+│           ├── _helpers.tpl
 │           ├── namespace.yaml
 │           ├── configmap.yaml
 │           ├── secret.yaml
@@ -80,10 +81,11 @@ phase-4/
 │           └── mcp-service.yaml
 ├── scripts/
 │   ├── build-images.sh
-│   ├── push-images.sh
 │   └── deploy-minikube.sh
 ├── README.md
-└── CLAUDE.md
+├── CLAUDE.md
+├── quickstart.md
+└── AI_TOOLS_DOCUMENTATION.md
 ```
 
 **Structure Decision**: Following the web application structure with frontend, backend, and MCP server components. The phase-4 directory contains all Docker/Kubernetes/Helm related files as specified in the architecture requirements.

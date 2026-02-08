@@ -1,4 +1,4 @@
-# Claude Code Rules
+# Qwen Code Rules
 
 This file is generated during init for the selected agent.
 
@@ -208,11 +208,3 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
-
-## Recent Changes
-- 002-advanced-cloud-deployment: Added Python 3.11 (FastAPI for services), TypeScript 5.x (Frontend) + FastAPI, Kafka-Python, Dapr SDK, Next.js 16+, React 19+, SQLModel, Neon PostgreSQL
-- 001-k8s-minikube-deployment: Added Dockerfile, Kubernetes YAML, Helm Chart templating + Docker, Kubernetes, Helm, Minikube, kubectl
-- 001-ai-chatbot: Added Neon Serverless PostgreSQL with SQLModel ORM
-
-## Active Technologies
-- Python 3.11 (FastAPI for services), TypeScript 5.x (Frontend) + FastAPI, Kafka-Python, Dapr SDK, Next.js 16+, React 19+, SQLModel, Neon PostgreSQL (002-advanced-cloud-deployment)
