@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "websocket-service"
+version = "0.1.0"
+description = "Service to handle WebSocket connections"
+authors = ["Developer <developer@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = "^0.24.0"
+websockets = "^12.0"
+kafka-python = "^2.0.2"
+dapr-ext-fastapi = "^1.9.0"
+pydantic = "^2.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

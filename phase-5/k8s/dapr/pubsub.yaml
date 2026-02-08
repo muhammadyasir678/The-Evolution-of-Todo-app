@@ -1,0 +1,19 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-pubsub
+  namespace: todo-app
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+  - name: brokers
+    value: "kafka.kafka.svc.cluster.local:9092"  # Update for cloud: "pkc-XXXXX.region.provider.confluent.cloud:9092"
+  - name: authType
+    value: "plaintext"  # Change to "mtls" or "saslPlaintext" for production
+  - name: consumerGroup
+    value: "dapr-consumer-group"
+  - name: clientID
+    value: "dapr-kafka-client"
+  - name: authRequired
+    value: "false"

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: websocket-service
+  namespace: todo-app
+  labels:
+    app: websocket-service
+spec:
+  selector:
+    app: websocket-service
+  ports:
+    - protocol: TCP
+      port: 8004
+      targetPort: 8004
+  type: ClusterIP  # Changed from LoadBalancer to ClusterIP for internal communication

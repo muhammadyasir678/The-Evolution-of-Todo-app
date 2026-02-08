@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-service
+  namespace: todo-app
+  labels:
+    app: websocket-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: websocket-service
+  template:
+    metadata:
+      labels:
+        app: websocket-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "websocket-service"
+        dapr.io/app-port: "8004"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: websocket-service
+        image: websocket-service:latest
+        ports:
+        - containerPort: 8004
+        env:
+        - name: SERVICE_PORT
+          value: "8004"
+        - name: KAFKA_BROKERS
+          value: "kafka.kafka.svc.cluster.local:9092"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 5
+          periodSeconds: 5

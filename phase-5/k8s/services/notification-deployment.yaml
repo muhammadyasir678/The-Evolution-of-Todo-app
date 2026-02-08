@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: todo-app
+  labels:
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "notification-service"
+        dapr.io/app-port: "8002"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: notification-service
+        image: notification-service:latest
+        ports:
+        - containerPort: 8002
+        env:
+        - name: SERVICE_PORT
+          value: "8002"
+        - name: KAFKA_BROKERS
+          value: "kafka.kafka.svc.cluster.local:9092"
+        - name: SENDGRID_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: todo-secrets
+              key: sendgridApiKey
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 5
+          periodSeconds: 5
