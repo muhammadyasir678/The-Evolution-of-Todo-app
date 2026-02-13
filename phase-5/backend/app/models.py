@@ -4,6 +4,18 @@ from typing import Optional
 from datetime import datetime
 import sqlalchemy as sa
 
+class User(SQLModel, table=True):
+    """
+    User model representing a registered user with email, password,
+    and account metadata.
+    """
+    id: str = Field(primary_key=True)
+    email: str = Field(unique=True, index=True)
+    hashed_password: str
+    name: Optional[str] = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
 class TaskBase(SQLModel):
     title: str = Field(min_length=1, max_length=200)
     description: Optional[str] = Field(default=None, max_length=1000)
@@ -48,41 +60,6 @@ class Message(SQLModel, table=True):
     role: str = Field(sa_column=Column(saEnum("user", "assistant", name="message_role"), nullable=False))
     content: str = Field(max_length=10000)
     created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-
-class ConversationCreate(SQLModel):
-    """
-    Schema for creating a new conversation.
-    """
-    user_id: str
-
-class ConversationPublic(SQLModel):
-    """
-    Public schema for conversation representation in API responses.
-    """
-    id: int
-    user_id: str
-    created_at: datetime
-    updated_at: datetime
-
-class MessageCreate(SQLModel):
-    """
-    Schema for creating a new message.
-    """
-    user_id: str
-    conversation_id: int
-    role: str
-    content: str
-
-class MessagePublic(SQLModel):
-    """
-    Public schema for message representation in API responses.
-    """
-    id: int
-    user_id: str
-    conversation_id: int
-    role: str
-    content: str
-    created_at: datetime
 
 class AuditLog(SQLModel, table=True):
     """

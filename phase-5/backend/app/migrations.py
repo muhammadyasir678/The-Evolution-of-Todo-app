@@ -3,7 +3,7 @@ Database migration script for Advanced Cloud Deployment
 Adding advanced fields to Task model and supporting models for event-driven architecture.
 """
 from sqlmodel import create_engine, SQLModel
-from models import Task, Conversation, Message, AuditLog
+from models import Task, Conversation, Message, AuditLog, User
 import os
 from dotenv import load_dotenv
 
@@ -21,6 +21,7 @@ def run_migrations():
     # Create all tables (including advanced Task fields and supporting models)
     SQLModel.metadata.create_all(engine)
     print("Database tables created successfully!")
+    print("- User table created with email, password, and account metadata")
     print("- Task table created with advanced fields (priority, tags, due_date, etc.)")
     print("- Conversation table created with indexes on user_id")
     print("- Message table created with indexes on user_id and conversation_id")

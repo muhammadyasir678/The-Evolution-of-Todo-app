@@ -1,6 +1,6 @@
 from sqlmodel import create_engine, Session, SQLModel
 from typing import Generator
-from .models import Task
+from .models import Task, User  # Added User import
 from sqlmodel.sql.expression import Select, select
 from contextlib import contextmanager
 import os
