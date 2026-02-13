@@ -1,18 +1,24 @@
-[tool.poetry]
+[project]
 name = "notification-service"
 version = "0.1.0"
 description = "Service to handle notifications"
-authors = ["Developer <developer@example.com>"]
+authors = [{ name = "Developer", email = "developer@example.com" }]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = "^0.104.1"
-uvicorn = "^0.24.0"
-kafka-python = "^2.0.2"
-dapr-ext-fastapi = "^1.9.0"
-web-push = "^3.0.1"
-sendgrid = "^6.10.0"
+dependencies = [
+    "fastapi>=0.104.1",
+    "uvicorn>=0.24.0",
+    "kafka-python>=2.0.2",
+    "dapr-ext-fastapi>=1.9.0",
+    "web-push>=3.0.1",
+    "sendgrid>=6.10.0",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.3",
+    "httpx>=0.25.2",
+]

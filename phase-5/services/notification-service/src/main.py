@@ -86,30 +86,35 @@ async def process_reminder_event(event_data: Dict[str, Any]):
         title = event_data.get('title')
         due_at = event_data.get('due_at')
         notification_preferences = event_data.get('notification_preferences', {})
-        
+
+        # Skip if critical fields are missing
+        if user_id is None:
+            logger.warning("Reminder event missing user_id, skipping notification")
+            return
+
         logger.info(f"Processing reminder for task {task_id}, user {user_id}")
-        
+
         # Prepare notification message
         message = f"Reminder: Your task '{title}' is due at {due_at}"
-        
+
         # Send browser notification if enabled
         if notification_preferences.get('browser_push', False):
             await send_browser_notification(user_id, f"Task Reminder: {title}", message)
-        
+
         # Send email notification if enabled
         if notification_preferences.get('email', False):
             # In a real implementation, we would look up the user's email address
             # For now, we'll use a placeholder
             user_email = f"{user_id}@example.com"
             await send_email_notification(
-                user_id, 
-                user_email, 
-                f"Reminder: {title}", 
+                user_id,
+                user_email,
+                f"Reminder: {title}",
                 message
             )
-        
+
         logger.info(f"Notifications sent for task {task_id}")
-        
+
     except Exception as e:
         logger.error(f"Error processing reminder event: {str(e)}", exc_info=True)
 
