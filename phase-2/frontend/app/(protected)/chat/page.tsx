@@ -9,6 +9,7 @@
 import React from 'react';
 import ChatInterface from '../../../components/ChatInterface';
 import Header from '../../../components/Header'; // Using the existing Header from phase-2
+import { WebSocketProvider } from '../../../components/WebSocketProvider';
 
 const ChatPage: React.FC = () => {
   // Using the same auth pattern as phase-2
@@ -58,25 +59,30 @@ const ChatPage: React.FC = () => {
     return null;
   }
 
+  // Use the actual user ID from the session data
+  const actualUserId = session.user.id;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header userEmail={session.user.email} userName={session.user.name} />
+    <WebSocketProvider userId={actualUserId}>
+      <div className="min-h-screen bg-gray-50">
+        <Header userEmail={session.user.email} userName={session.user.name} />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">AI Todo Assistant</h1>
-            <p className="text-gray-600">Chat with your personal todo assistant</p>
-            {/* Task T078: Show user information */}
-            <p className="text-sm text-gray-500 mt-1">Logged in as: {session.user.email}</p>
-          </div>
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-gray-800">AI Todo Assistant</h1>
+              <p className="text-gray-600">Chat with your personal todo assistant</p>
+              {/* Task T078: Show user information */}
+              <p className="text-sm text-gray-500 mt-1">Logged in as: {session.user.email}</p>
+            </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4 h-[600px] flex flex-col">
-            <ChatInterface />
+            <div className="bg-white rounded-lg shadow-md p-4 h-[600px] flex flex-col">
+              <ChatInterface />
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </WebSocketProvider>
   );
 };
 
