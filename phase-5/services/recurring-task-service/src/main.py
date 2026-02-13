@@ -7,16 +7,51 @@ When a recurring task is completed, it creates the next occurrence based on the 
 import asyncio
 import json
 import logging
+import os
 from datetime import datetime, timedelta
 from typing import Dict, Any
 
 from dapr.ext.fastapi import DaprApp
 from fastapi import FastAPI
 from kafka import KafkaConsumer
-from sqlmodel import Session, select
+from sqlmodel import Session, select, create_engine, SQLModel, Field
+from sqlalchemy import Column, DateTime, Enum as saEnum
+import sqlalchemy as sa
+from dotenv import load_dotenv
 
-from backend.app.database import engine
-from backend.app.models import Task
+# Load environment variables
+load_dotenv()
+
+# Get database URL from environment or use default
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
+
+# Create engine
+engine = create_engine(DATABASE_URL)
+
+# Define local models to avoid circular dependencies
+class TaskBase(SQLModel):
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(default=None, max_length=1000)
+    completed: bool = Field(default=False)
+
+class Task(TaskBase, table=True):
+    """
+    Task model representing a user's task with title, description,
+    completion status, and timestamps.
+    """
+    id: int = Field(primary_key=True, default=None)
+    user_id: str = Field(index=True)  # Foreign key reference to user
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
+
+    # Advanced features fields
+    priority: str = Field(default="medium", sa_column=Column(saEnum("high", "medium", "low", name="priority_enum")))
+    tags: str = Field(default=None)  # Stored as JSON string
+    due_date: datetime = Field(default=None)
+    reminder_time: datetime = Field(default=None)
+    recurrence_pattern: str = Field(default=None, sa_column=Column(saEnum("daily", "weekly", "monthly", name="recurrence_enum")))  # daily, weekly, monthly
+    recurrence_interval: int = Field(default=None)  # e.g., every 2 weeks
+    parent_task_id: int = Field(default=None, foreign_key="task.id")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -37,6 +72,8 @@ TASK_EVENTS_TOPIC = "task-events"
 async def startup_event():
     """Initialize the Kafka consumer and start listening for events."""
     logger.info("Starting Recurring Task Service...")
+    # Create all tables
+    SQLModel.metadata.create_all(engine)
     # Start the Kafka consumer in a background task
     asyncio.create_task(consume_task_events())
 
