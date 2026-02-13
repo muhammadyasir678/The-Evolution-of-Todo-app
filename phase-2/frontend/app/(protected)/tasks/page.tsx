@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '../../../components/Header';
 import TaskForm from '../../../components/TaskForm';
 import TaskList from '../../../components/TaskList';
+import { WebSocketProvider } from '../../../components/WebSocketProvider';
 
 const TasksPage = () => {
   const router = useRouter();
@@ -97,22 +98,24 @@ const TasksPage = () => {
   const actualUserId = session.user.id;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header userEmail={session.user.email} userName={session.user.name} />
+    <WebSocketProvider userId={actualUserId}>
+      <div className="min-h-screen bg-gray-50">
+        <Header userEmail={session.user.email} userName={session.user.name} />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Tasks</h1>
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Tasks</h1>
 
-          <TaskForm
-            userId={actualUserId}
-            onTaskCreated={() => {}}
-          />
+            <TaskForm
+              userId={actualUserId}
+              onTaskCreated={() => {}}
+            />
 
-          <TaskList userId={actualUserId} />
-        </div>
-      </main>
-    </div>
+            <TaskList userId={actualUserId} />
+          </div>
+        </main>
+      </div>
+    </WebSocketProvider>
   );
 };
 
