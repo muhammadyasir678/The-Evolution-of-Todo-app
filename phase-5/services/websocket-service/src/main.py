@@ -106,12 +106,17 @@ async def consume_task_updates():
         try:
             event_data = message.value
             user_id = event_data.get('user_id')
-            
+
+            # Skip if user_id is None
+            if user_id is None:
+                logger.warning("Task update event missing user_id, skipping broadcast")
+                continue
+
             logger.info(f"Received task update for user {user_id}")
-            
+
             # Broadcast the update to all connected clients for this user
             await manager.broadcast_to_user(event_data, user_id)
-            
+
         except Exception as e:
             logger.error(f"Error processing task update event: {str(e)}", exc_info=True)
 
@@ -124,11 +129,17 @@ async def handle_task_update_event(event_data: Dict[str, Any]) -> None:
     """
     try:
         user_id = event_data.get('user_id')
+
+        # Skip if user_id is None
+        if user_id is None:
+            logger.warning("Dapr task update event missing user_id, skipping broadcast")
+            return
+
         logger.info(f"Dapr received task update for user {user_id}")
-        
+
         # Broadcast the update to all connected clients for this user
         await manager.broadcast_to_user(event_data, user_id)
-        
+
     except Exception as e:
         logger.error(f"Error processing task update event via Dapr: {str(e)}", exc_info=True)
 
