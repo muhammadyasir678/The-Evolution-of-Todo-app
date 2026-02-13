@@ -14,7 +14,7 @@ import os
 backend_path = os.path.join(os.path.dirname(__file__), '..', '..', 'backend')
 if backend_path not in sys.path:
     sys.path.insert(0, backend_path)
-from app.models import Task, TaskCreate, TaskUpdate
+from backend.app.models import Task, TaskCreate, TaskUpdate
 import os
 from dotenv import load_dotenv
 
