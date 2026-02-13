@@ -77,7 +77,7 @@ BETTER_AUTH_SECRET=your_auth_secret
 ### 1. Build Docker Images
 ```bash
 # Build frontend image
-docker build -t todo-frontend:latest -f docker/frontend.Dockerfile ../phase-3/frontend
+docker build -t todo-frontend:latest -f docker/frontend.Dockerfile ../phase-2/frontend
 
 # Build backend image
 docker build -t todo-backend:latest -f docker/backend.Dockerfile ../phase-3/backend

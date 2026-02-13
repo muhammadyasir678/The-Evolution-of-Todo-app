@@ -65,7 +65,7 @@ Examples of foundational tasks (adjust based on your project):
 - [x] T317 [P] [US1] Create k8s/backend-service.yaml with ClusterIP type and port 8000
 - [x] T318 [P] [US1] Create k8s/mcp-deployment.yaml with 1 replica and proper configuration
 - [x] T319 [P] [US1] Create k8s/mcp-service.yaml with ClusterIP type
-- [ ] T320 [US1] Setup Minikube environment with proper installation steps and cluster start
+- [x] T320 [US1] Setup Minikube environment with proper installation steps and cluster start
 - [ ] T321 [US1] Build Docker images in Minikube with eval $(minikube docker-env) and build-images.sh
 - [ ] T322 [US1] Deploy application to Minikube with secrets creation and deploy-minikube.sh
 - [ ] T323 [US1] Test application on Minikube with access verification and functionality testing
@@ -86,8 +86,8 @@ Examples of foundational tasks (adjust based on your project):
 - [x] T325 [P] [US2] Implement multi-stage build for backend.Dockerfile with uv dependency installation
 - [x] T326 [P] [US2] Implement MCP server Dockerfile with proper Python dependencies
 - [x] T327 [P] [US2] Add health checks to all Dockerfiles
-- [ ] T328 [US2] Optimize Docker images for smaller size with proper layer caching
-- [ ] T329 [US2] Test Docker Compose locally with .env file and full functionality verification
+- [x] T328 [US2] Optimize Docker images for smaller size with proper layer caching
+- [x] T329 [US2] Test Docker Compose locally with .env file and full functionality verification
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -104,8 +104,8 @@ Examples of foundational tasks (adjust based on your project):
 - [x] T330 [P] [US3] Add resource requests and limits to all deployment manifests
 - [x] T331 [P] [US3] Add readiness and liveness probes to frontend and backend deployments
 - [x] T332 [P] [US3] Implement secure handling of sensitive data in secrets
-- [ ] T333 [US3] Validate Kubernetes manifests follow best practices for production readiness
-- [ ] T334 [US3] Test individual Kubernetes resources with kubectl apply and verification
+- [x] T333 [US3] Validate Kubernetes manifests follow best practices for production readiness
+- [x] T334 [US3] Test individual Kubernetes resources with kubectl apply and verification
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -123,8 +123,8 @@ Examples of foundational tasks (adjust based on your project):
 - [x] T336 [P] [US4] Parameterize Kubernetes manifests with {{ .Values.* }} syntax
 - [x] T337 [P] [US4] Create _helpers.tpl for reusable template functions
 - [x] T338 [US4] Support replicas, image tags, resources from values.yaml
-- [ ] T339 [US4] Test Helm chart installation with default and custom values
-- [ ] T340 [US4] Test Helm upgrade functionality without downtime
+- [x] T339 [US4] Test Helm chart installation with default and custom values
+- [x] T340 [US4] Test Helm upgrade functionality without downtime
 
 **Checkpoint**: At this point, all user stories should be integrated and working together
 
@@ -141,8 +141,8 @@ Examples of foundational tasks (adjust based on your project):
 - [x] T341 [P] [US5] Document Docker AI (Gordon) commands used for Dockerfile optimization
 - [x] T342 [P] [US5] Document kubectl-ai commands used for Kubernetes operations
 - [x] T343 [P] [US5] Document kagent commands used for troubleshooting
-- [ ] T344 [US5] Integrate AI tools into deployment workflow where applicable
-- [ ] T345 [US5] Test AI-assisted operations and document results
+- [x] T344 [US5] Integrate AI tools into deployment workflow where applicable
+- [x] T345 [US5] Test AI-assisted operations and document results
 
 **Checkpoint**: All user stories should now be enhanced with AI-assisted capabilities
 
@@ -154,8 +154,8 @@ Examples of foundational tasks (adjust based on your project):
 
 - [x] T346 [P] Update phase-4/README.md with prerequisites, build, and deployment instructions
 - [x] T347 [P] Update phase-4/CLAUDE.md with implementation notes
-- [ ] T348 [P] Create demo and verification documentation with video showing deployment process
-- [ ] T349 Troubleshooting and optimization with log checking and resource verification
+- [x] T348 [P] Create demo and verification documentation with video showing deployment process
+- [x] T349 Troubleshooting and optimization with log checking and resource verification
 - [x] T350 Run quickstart.md validation to ensure all steps work as documented
 
 ---
