@@ -144,3 +144,12 @@ phase-5/
 - TLS encryption for all service communications
 - Role-based access control for task operations
 - Secure handling of sensitive data in Kubernetes Secrets
+
+## Dependency Management
+
+This project uses `uv` for fast dependency management. See [DEPENDENCIES_WITH_UV.md](./DEPENDENCIES_WITH_UV.md) for detailed instructions on managing dependencies with `uv`.
+
+To install dependencies for all services:
+```bash
+bash scripts/install-dependencies-with-uv.sh
+```

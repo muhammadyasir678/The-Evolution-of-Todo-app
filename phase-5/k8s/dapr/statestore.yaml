@@ -10,6 +10,6 @@ spec:
   - name: connectionString
     secretKeyRef:
       name: postgresql-secret
-      key: connectionUrl
+      key: postgresql://neondb_owner:npg_2BuT4zRGxMEf@ep-royal-unit-ahqi0169-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
   - name: actorStateStore
     value: "true"
