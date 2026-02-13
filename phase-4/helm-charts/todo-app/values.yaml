@@ -4,10 +4,10 @@
 # Declare variables to be passed into your templates.
 
 frontend:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: todo-frontend
-    pullPolicy: IfNotPresent
+    pullPolicy: Never  # Use 'Never' to force using local images in Minikube
     tag: "latest"
   service:
     type: NodePort
@@ -24,10 +24,10 @@ frontend:
     NEXT_PUBLIC_API_URL: "http://backend-service:8000"
 
 backend:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: todo-backend
-    pullPolicy: IfNotPresent
+    pullPolicy: Never  # Use 'Never' to force using local images in Minikube
     tag: "latest"
   service:
     type: ClusterIP
@@ -44,7 +44,7 @@ mcpServer:
   replicaCount: 1
   image:
     repository: todo-mcp-server
-    pullPolicy: IfNotPresent
+    pullPolicy: Never  # Use 'Never' to force using local images in Minikube
     tag: "latest"
   service:
     type: ClusterIP
@@ -66,6 +66,9 @@ config:
     MCP_SERVER_PORT: "8080"
 
 secrets:
+  # For local development, you can set these values directly in the secret.yaml file
+  # or create the secret separately before deploying the chart
+  # These are intentionally left empty for security
   databaseUrl: ""
   openaiApiKey: ""
   authSecret: ""

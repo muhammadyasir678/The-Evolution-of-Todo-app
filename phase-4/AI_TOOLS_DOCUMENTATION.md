@@ -54,9 +54,28 @@ kagent "optimize resource allocation for todo-app deployment"
 kagent "review logs from all pods and identify potential issues"
 ```
 
+## Integration into Deployment Workflow
+
+### In build-images.sh
+```bash
+# Use Gordon to optimize Dockerfiles before building
+docker ai "optimize Dockerfile at phase-5/docker/frontend.Dockerfile"
+docker ai "optimize Dockerfile at phase-5/docker/backend.Dockerfile"
+docker ai "optimize Dockerfile at phase-5/docker/mcp-server.Dockerfile"
+```
+
+### In deploy scripts
+```bash
+# Use kubectl-ai to verify deployment status
+kubectl-ai "check if all pods are running in todo-app namespace"
+
+# Use kagent for troubleshooting
+kagent "analyze health of all deployments in todo-app namespace"
+```
+
 ## Summary
 
-These AI-assisted tools can significantly speed up development and troubleshooting tasks:
+These AI-assisted tools can significantly speed up development and operational tasks:
 - Docker AI (Gordon) helps optimize container builds
 - kubectl-ai assists with Kubernetes resource management
 - kagent provides intelligent troubleshooting capabilities

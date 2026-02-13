@@ -1,0 +1,132 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from frontend.Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 1.39kB 0.2s done
+#1 DONE 0.8s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 ...
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 4.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context:
+#4 transferring context: 2B 0.1s done
+#4 DONE 0.7s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8
+#6 resolve docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8
+#6 resolve docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8 0.8s done
+#6 DONE 1.0s
+
+#7 [production 3/9] RUN addgroup -g 1001 -S nodejs &&    adduser -S nextjs -u 1001
+#7 CACHED
+
+#8 [production 4/9] RUN apk add --no-cache dumb-init
+#8 CACHED
+
+#9 [builder 2/6] WORKDIR /app
+#9 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 16.59MB 2.3s
+#5 transferring context: 62.22MB 7.4s
+#5 transferring context: 126.82MB 12.4s
+#5 transferring context: 175.43MB 17.6s
+#5 transferring context: 203.55MB 23.5s
+#5 transferring context: 240.73MB 28.5s
+#5 transferring context: 302.58MB 33.5s
+#5 transferring context: 357.60MB 38.6s
+#5 transferring context: 379.99MB 44.1s
+#5 transferring context: 381.40MB 49.2s
+#5 transferring context: 388.81MB 54.2s
+#5 transferring context: 405.67MB 59.3s
+#5 transferring context: 407.06MB 64.4s
+#5 transferring context: 408.91MB 69.7s
+#5 transferring context: 409.65MB 74.8s
+#5 transferring context: 415.13MB 79.9s
+#5 transferring context: 420.36MB 85.1s
+#5 transferring context: 436.24MB 90.1s
+#5 transferring context: 476.28MB 95.6s
+#5 transferring context: 491.46MB 100.6s
+#5 transferring context: 528.03MB 105.7s
+#5 transferring context: 558.55MB 110.7s
+#5 transferring context: 591.99MB 115.7s
+#5 transferring context: 595.87MB 120.8s
+#5 transferring context: 607.99MB 125.9s
+#5 transferring context: 637.02MB 130.9s
+#5 transferring context: 656.49MB 136.1s
+#5 transferring context: 685.42MB 141.1s
+#5 transferring context: 721.08MB 146.2s
+#5 transferring context: 725.59MB 151.2s
+#5 transferring context: 726.90MB 156.3s
+#5 transferring context: 731.09MB 161.3s
+#5 transferring context: 732.65MB 166.3s
+#5 transferring context: 732.74MB 171.3s
+#5 transferring context: 732.87MB 176.4s
+#5 transferring context: 733.84MB 181.5s
+#5 transferring context: 741.53MB 186.6s
+#5 transferring context: 743.84MB 191.6s
+#5 transferring context: 747.24MB 196.7s
+#5 transferring context: 750.53MB 201.7s
+#5 transferring context: 751.76MB 206.8s
+#5 transferring context: 752.32MB 211.8s
+#5 transferring context: 752.73MB 216.9s
+#5 transferring context: 753.14MB 222.0s
+#5 transferring context: 753.56MB 227.0s
+#5 transferring context: 753.82MB 232.1s
+#5 transferring context: 754.16MB 237.3s
+#5 transferring context: 754.54MB 242.4s
+#5 transferring context: 754.96MB 247.5s
+#5 transferring context: 755.85MB 252.6s
+#5 transferring context: 756.22MB 257.6s
+#5 transferring context: 756.72MB 262.7s
+#5 transferring context: 757.53MB 267.8s
+#5 transferring context: 757.87MB 272.9s
+#5 transferring context: 758.23MB 277.9s
+#5 transferring context: 759.34MB 283.0s
+#5 transferring context: 760.13MB 288.0s
+#5 transferring context: 761.67MB 293.1s
+#5 transferring context: 762.23MB 298.1s
+#5 transferring context: 762.90MB 303.2s
+#5 transferring context: 768.96MB 308.2s
+#5 transferring context: 769.26MB 313.4s
+#5 transferring context: 769.49MB 318.4s
+#5 transferring context: 769.90MB 323.5s
+#5 transferring context: 770.53MB 329.1s
+#5 transferring context: 771.40MB 334.5s
+#5 transferring context: 771.59MB 339.6s
+#5 transferring context: 771.73MB 344.7s
+#5 transferring context: 772.00MB 349.7s
+#5 transferring context: 772.29MB 354.7s
+#5 transferring context: 773.98MB 360.1s
+#5 transferring context: 774.26MB 365.5s
+#5 transferring context: 774.70MB 370.7s
+#5 transferring context: 775.22MB 375.7s
+#5 transferring context: 775.70MB 380.8s
+#5 transferring context: 776.59MB 385.9s
+#5 transferring context: 777.19MB 391.0s
+#5 transferring context: 777.44MB 396.1s
+#5 transferring context: 778.22MB 401.2s
+#5 transferring context: 780.55MB 406.3s
+#5 transferring context: 790.48MB 411.4s
+#5 transferring context: 800.84MB 416.5s
+#5 transferring context: 802.82MB 421.5s
+#5 transferring context: 803.97MB 426.5s
+#5 transferring context: 806.81MB 431.5s
+#5 transferring context: 808.28MB 436.7s
+#5 transferring context: 809.52MB 441.7s
+#5 transferring context: 812.94MB 446.7s
+#5 transferring context: 821.98MB 451.7s
+#5 transferring context: 851.87MB 456.8s
+#5 transferring context: 877.41MB 460.8s done
+#5 CANCELED
+ERROR: failed to build: failed to solve: Canceled: context canceled

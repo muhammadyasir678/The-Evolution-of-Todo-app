@@ -22,7 +22,7 @@ spec:
         - containerPort: {{ .Values.frontend.service.port }}
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: {{ .Values.frontend.env.NEXT_PUBLIC_API_URL | quote }}
+          value: {{ .Values.config.data.NEXT_PUBLIC_API_URL | quote }}
         - name: NODE_ENV
           value: "production"
         envFrom:

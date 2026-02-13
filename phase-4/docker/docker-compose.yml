@@ -5,11 +5,11 @@ services:
   frontend:
     build:
       context: ../../phase-2/frontend
-      dockerfile: ../phase-4/docker/frontend.Dockerfile
+      dockerfile: ../../phase-4/docker/frontend.Dockerfile
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=https://muhammadyasir786-backend.hf.space
+      - NEXT_PUBLIC_API_URL=http://backend:8000
       - NODE_ENV=development
     depends_on:
       - backend
@@ -19,7 +19,7 @@ services:
   backend:
     build:
       context: ../../phase-3/backend
-      dockerfile: ../phase-4/docker/backend.Dockerfile
+      dockerfile: ../../phase-4/docker/backend.Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -34,8 +34,8 @@ services:
 
   mcp-server:
     build:
-      context: ../../phase-3/mcp-server
-      dockerfile: ../phase-4/docker/mcp-server.Dockerfile
+      context: ../../phase-3/mcp_server
+      dockerfile: ../../phase-4/docker/mcp-server.Dockerfile
     ports:
       - "8080:8080"
     environment:
