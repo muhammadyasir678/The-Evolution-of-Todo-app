@@ -1,0 +1,313 @@
+version = 1
+requires-python = ">=3.11"
+
+[[package]]
+name = "anyio"
+version = "4.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "idna",
+    "sniffio",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/75/b4/666b37b93d2f7e53df5d2d8d0d328d8b69a8b8b7b4d4a7d64b6a0c6e6e6c/anyio-4.2.0.tar.gz", hash = "sha256:684d16b6d7d5d0b4d5d67a3a1eac8c9a4d5b3c2e934bde8f1b3d8b0d3e8b0d2d" }
+wheels = [
+    "https://files.pythonhosted.org/packages/05/16/451b045188e87c01486d512b4bc18bb9d5b0d4d849d74b7b14ed24a1c1d7/anyio-4.2.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "fastapi"
+version = "0.104.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "anyio",
+    "starlette",
+    "typing-extensions",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/fastapi-0.104.1.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/fastapi-0.104.1-py3-none-any.whl",
+]
+
+[[package]]
+name = "uvicorn"
+version = "0.24.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "click",
+    "h11",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/uvicorn-0.24.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/uvicorn-0.24.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "sqlmodel"
+version = "0.0.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "pydantic",
+    "sqlalchemy",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sqlmodel-0.0.8.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sqlmodel-0.0.8-py3-none-any.whl",
+]
+
+[[package]]
+name = "psycopg2-binary"
+version = "2.9.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/psycopg2-binary-2.9.7.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/psycopg2-binary-2.9.7-py3-none-any.whl",
+]
+
+[[package]]
+name = "python-jose"
+version = "3.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "ecdsa",
+    "pyasn1",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/python-jose-3.3.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/python-jose-3.3.0-py2.py3-none-any.whl",
+]
+
+[[package]]
+name = "passlib"
+version = "1.7.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/passlib-1.7.4.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/passlib-1.7.4-py2.py3-none-any.whl",
+]
+
+[[package]]
+name = "bcrypt"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/bcrypt-4.0.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/bcrypt-4.0.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "better-auth"
+version = "0.0.1b11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "fastapi",
+    "pydantic",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/better-auth-0.0.1b11.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/better-auth-0.0.1b11-py3-none-any.whl",
+]
+
+[[package]]
+name = "openai"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "anyio",
+    "distro",
+    "httpx",
+    "pydantic",
+    "tqdm",
+    "typing-extensions",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/openai-1.0.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/openai-1.0.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "python-dotenv"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/python-dotenv-1.0.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/python-dotenv-1.0.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "kafka-python"
+version = "2.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/kafka-python-2.0.2.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/kafka-python-2.0.2-py3-none-any.whl",
+]
+
+[[package]]
+name = "dapr-ext-fastapi"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "dapr",
+    "fastapi",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/dapr-ext-fastapi-1.9.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/dapr-ext-fastapi-1.9.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "dapr"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "grpcio",
+    "protobuf",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/dapr-1.9.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/dapr-1.9.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "sse-starlette"
+version = "1.8.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "anyio",
+    "starlette",
+    "typing-extensions",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sse-starlette-1.8.2.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sse-starlette-1.8.2-py3-none-any.whl",
+]
+
+[[package]]
+name = "asyncer"
+version = "0.0.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "anyio",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/asyncer-0.0.5.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/asyncer-0.0.5-py3-none-any.whl",
+]
+
+[[package]]
+name = "pgvector"
+version = "0.2.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "psycopg2-binary",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pgvector-0.2.5.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pgvector-0.2.5-py3-none-any.whl",
+]
+
+[[package]]
+name = "asyncpg"
+version = "0.29.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/asyncpg-0.29.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/asyncpg-0.29.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+]
+
+[[package]]
+name = "pydantic-settings"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "pydantic",
+    "python-dotenv",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pydantic-settings-2.2.1.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pydantic-settings-2.2.1-py3-none-any.whl",
+]
+
+[[package]]
+name = "web-push"
+version = "3.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "py-vapid",
+    "pycryptodome",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/web-push-3.0.1.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/web-push-3.0.1-py2.py3-none-any.whl",
+]
+
+[[package]]
+name = "sendgrid"
+version = "6.10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "python-http-client",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sendgrid-6.10.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/sendgrid-6.10.0-py3-none-any.whl",
+]
+
+[[package]]
+name = "websockets"
+version = "12.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/websockets-12.0.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/websockets-12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+]
+
+[[package]]
+name = "pytest"
+version = "7.4.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "iniconfig",
+    "packaging",
+    "pluggy",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pytest-7.4.3.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pytest-7.4.3-py3-none-any.whl",
+]
+
+[[package]]
+name = "httpx"
+version = "0.25.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "anyio",
+    "certifi",
+    "httpcore",
+    "idna",
+    "sniffio",
+    "typing-extensions",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/httpx-0.25.2.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/httpx-0.25.2-py3-none-any.whl",
+]
+
+[[package]]
+name = "pytest-asyncio"
+version = "0.21.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    "pytest",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pytest-asyncio-0.21.1.tar.gz", hash = "sha256:0d8a0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b" }
+wheels = [
+    "https://files.pythonhosted.org/packages/0d/8a/0d2b6d0b7e7d5e0b6c7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b/pytest-asyncio-0.21.1-py3-none-any.whl",
+]
+
+[dependency-groups]
+dev = [
+    { name = "pytest", version = "7.4.3" },
+    { name = "httpx", version = "0.25.2" },
+    { name = "pytest-asyncio", version = "0.21.1" },
+]
