@@ -100,7 +100,13 @@ class TaskCreate(TaskBase):
     """
     Schema for creating a new task.
     """
-    pass
+    priority: Optional[str] = Field(default="medium", sa_column=Column(saEnum("high", "medium", "low", name="priority_enum")))
+    tags: Optional[str] = Field(default=None)  # Stored as JSON string
+    due_date: Optional[datetime] = Field(default=None)
+    reminder_time: Optional[datetime] = Field(default=None)
+    recurrence_pattern: Optional[str] = Field(default=None, sa_column=Column(saEnum("daily", "weekly", "monthly", name="recurrence_enum")))  # daily, weekly, monthly
+    recurrence_interval: Optional[int] = Field(default=None)  # e.g., every 2 weeks
+    parent_task_id: Optional[int] = Field(default=None, foreign_key="task.id")
 
 class TaskUpdate(SQLModel):
     """
@@ -109,6 +115,13 @@ class TaskUpdate(SQLModel):
     title: Optional[str] = Field(default=None, min_length=1, max_length=200)
     description: Optional[str] = Field(default=None, max_length=1000)
     completed: Optional[bool] = None
+    priority: Optional[str] = Field(default=None, sa_column=Column(saEnum("high", "medium", "low", name="priority_enum")))
+    tags: Optional[str] = Field(default=None)  # Stored as JSON string
+    due_date: Optional[datetime] = Field(default=None)
+    reminder_time: Optional[datetime] = Field(default=None)
+    recurrence_pattern: Optional[str] = Field(default=None, sa_column=Column(saEnum("daily", "weekly", "monthly", name="recurrence_enum")))  # daily, weekly, monthly
+    recurrence_interval: Optional[int] = Field(default=None)  # e.g., every 2 weeks
+    parent_task_id: Optional[int] = Field(default=None, foreign_key="task.id")
 
 class TaskPublic(TaskBase):
     """
@@ -118,3 +131,10 @@ class TaskPublic(TaskBase):
     user_id: str
     created_at: datetime
     updated_at: datetime
+    priority: Optional[str] = None
+    tags: Optional[str] = None
+    due_date: Optional[datetime] = None
+    reminder_time: Optional[datetime] = None
+    recurrence_pattern: Optional[str] = None
+    recurrence_interval: Optional[int] = None
+    parent_task_id: Optional[int] = None

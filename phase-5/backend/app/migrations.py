@@ -1,9 +1,9 @@
 """
-Database migration script for AI-Powered Todo Chatbot - Task T013
-Adding Conversation and Message models to support chat functionality.
+Database migration script for Advanced Cloud Deployment
+Adding advanced fields to Task model and supporting models for event-driven architecture.
 """
 from sqlmodel import create_engine, SQLModel
-from .models import Conversation, Message
+from models import Task, Conversation, Message, AuditLog
 import os
 from dotenv import load_dotenv
 
@@ -11,18 +11,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def run_migrations():
-    """Run database migrations to create Conversation and Message tables."""
+    """Run database migrations to create all tables including advanced Task fields."""
     # Get database URL from environment
     database_url = os.getenv("DATABASE_URL", "sqlite:///todo_app.db")
 
     # Create engine
     engine = create_engine(database_url, echo=True)
 
-    # Create all tables (including new Conversation and Message tables)
+    # Create all tables (including advanced Task fields and supporting models)
     SQLModel.metadata.create_all(engine)
     print("Database tables created successfully!")
+    print("- Task table created with advanced fields (priority, tags, due_date, etc.)")
     print("- Conversation table created with indexes on user_id")
     print("- Message table created with indexes on user_id and conversation_id")
+    print("- AuditLog table created for tracking task operations")
 
 if __name__ == "__main__":
     run_migrations()

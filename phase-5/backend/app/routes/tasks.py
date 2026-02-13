@@ -76,7 +76,14 @@ def create_task(
         title=task.title,
         description=task.description,
         completed=task.completed,
-        user_id=user_id
+        user_id=user_id,
+        priority=task.priority,
+        tags=task.tags,
+        due_date=task.due_date,
+        reminder_time=task.reminder_time,
+        recurrence_pattern=task.recurrence_pattern,
+        recurrence_interval=task.recurrence_interval,
+        parent_task_id=task.parent_task_id
     )
 
     session.add(db_task)
@@ -410,7 +417,7 @@ def toggle_task_completion(
     return db_task
 
 
-@router.get("/tasks", response_model=List[TaskPublic])
+@router.get("/tasks/filtered", response_model=List[TaskPublic])
 def get_filtered_tasks(
     user_id: str,
     current_user_id: str = Depends(get_current_user),
@@ -453,34 +460,34 @@ def get_filtered_tasks(
 
     # Build the query with filters
     statement = select(Task).where(Task.user_id == user_id)
-    
+
     # Apply priority filter
     if priority:
         statement = statement.where(Task.priority == priority)
-    
+
     # Apply status filter
     if status and status != "all":
         if status == "pending":
             statement = statement.where(Task.completed == False)
         elif status == "completed":
             statement = statement.where(Task.completed == True)
-    
+
     # Apply due date range filters
     if due_after:
         due_after_dt = datetime.fromisoformat(due_after.replace('Z', '+00:00'))
         statement = statement.where(Task.due_date >= due_after_dt)
-    
+
     if due_before:
         due_before_dt = datetime.fromisoformat(due_before.replace('Z', '+00:00'))
         statement = statement.where(Task.due_date <= due_before_dt)
-    
+
     # Apply tags filter (simplified - in a real implementation, you'd need to handle JSON arrays properly)
     if tags:
         tag_list = tags.split(',')
         # This is a simplified approach - in reality, you'd need to handle JSON array matching
         for tag in tag_list:
             statement = statement.where(Task.tags.contains(tag.strip()))
-    
+
     # Apply sorting
     if sort_by == "due_date":
         if sort_order == "asc":
@@ -502,7 +509,7 @@ def get_filtered_tasks(
             statement = statement.order_by(Task.created_at.asc())
         else:
             statement = statement.order_by(Task.created_at.desc())
-    
+
     # Execute the query
     tasks = session.exec(statement).all()
     return tasks
