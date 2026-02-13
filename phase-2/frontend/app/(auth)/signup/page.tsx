@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { signIn } from '../../../lib/auth';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState('');

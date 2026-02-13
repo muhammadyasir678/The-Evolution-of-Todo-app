@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { signIn } from '../../../lib/auth';
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
@@ -48,7 +47,14 @@ const SignInPage = () => {
           errorMessage = `HTTP ${response.status}`;
         }
 
-        setError(errorMessage);
+        // Provide more user-friendly error messages
+        if (errorMessage.toLowerCase().includes('incorrect email') || 
+            errorMessage.toLowerCase().includes('password')) {
+          setError('Incorrect email or password. Please try again.');
+        } else {
+          setError(errorMessage);
+        }
+        
         console.error('Sign in error:', errorMessage);
       } else {
         // Successful sign in - store token and user info, then redirect to tasks page
