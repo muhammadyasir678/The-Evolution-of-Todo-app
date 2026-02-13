@@ -1,8 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import TaskDueDate from './TaskDueDate';
+import TaskPriority from './TaskPriority';
+import TaskRecurrence from './TaskRecurrence';
+import TaskTags from './TaskTags';
 import { CreateTaskRequest } from '../lib/types';
 import { taskApi } from '../lib/api';
+import WebSocketService from '../lib/websocketService';
 
 interface TaskFormProps {
   userId: string;
@@ -14,6 +19,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const webSocketService = WebSocketService.getInstance();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +57,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
         setTitle('');
         setDescription('');
         // Notify parent component
+        // The backend will emit a WebSocket event, which will be handled by TaskList
+        // We don't need to do anything here as the TaskList component handles WebSocket events
         onTaskCreated();
       }
     } catch (err) {

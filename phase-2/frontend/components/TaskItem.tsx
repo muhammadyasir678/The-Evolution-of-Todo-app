@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { FiEdit, FiTrash2, FiSave, FiX } from 'react-icons/fi';
 import { Task, UpdateTaskRequest } from '../lib/types';
 import { taskApi } from '../lib/api';
+import WebSocketService from '../lib/websocketService';
 
 interface TaskItemProps {
   task: Task;
@@ -18,13 +19,15 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, userId, onTaskUpdated, onTask
   const [description, setDescription] = useState(task.description || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const webSocketService = WebSocketService.getInstance();
 
   const handleToggleComplete = async () => {
     setLoading(true);
     try {
       const result = await taskApi.toggleTaskCompletion(userId, task.id, !task.completed);
       if (!result.error) {
-        onTaskUpdated();
+        // The backend will emit a WebSocket event, which will be handled by TaskList
+        // We don't need to do anything here as the TaskList component handles WebSocket events
       } else {
         setError(result.error);
       }
@@ -78,7 +81,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, userId, onTaskUpdated, onTask
       const result = await taskApi.updateTask(userId, task.id, updateData);
       if (!result.error) {
         setIsEditing(false);
-        onTaskUpdated();
+        // The backend will emit a WebSocket event, which will be handled by TaskList
+        // We don't need to do anything here as the TaskList component handles WebSocket events
       } else {
         setError(result.error);
       }
@@ -96,7 +100,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, userId, onTaskUpdated, onTask
       try {
         const result = await taskApi.deleteTask(userId, task.id);
         if (!result.error) {
-          onTaskDeleted();
+          // The backend will emit a WebSocket event, which will be handled by TaskList
+          // We don't need to do anything here as the TaskList component handles WebSocket events
         } else {
           setError(result.error);
         }
