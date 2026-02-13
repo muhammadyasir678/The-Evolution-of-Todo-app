@@ -7,16 +7,41 @@ It maintains a record of all operations performed on tasks for compliance and tr
 import asyncio
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Dict, Any
 
 from dapr.ext.fastapi import DaprApp
 from fastapi import FastAPI
 from kafka import KafkaConsumer
-from sqlmodel import Session, select
+from sqlmodel import Session, select, create_engine, SQLModel, Field, desc
+from sqlalchemy import Column, DateTime, Enum as saEnum
+import sqlalchemy as sa
+from dotenv import load_dotenv
 
-from backend.app.database import engine
-from backend.app.models import AuditLog
+# Load environment variables
+load_dotenv()
+
+# Get database URL from environment or use default
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
+
+# Create engine
+engine = create_engine(DATABASE_URL)
+
+# Define local models to avoid circular dependencies
+from typing import Optional
+
+class AuditLog(SQLModel, table=True):
+    """
+    AuditLog model for tracking all task operations.
+    """
+    id: int = Field(primary_key=True, default=None)
+    user_id: str = Field(index=True)  # Reference to user
+    task_id: Optional[int] = Field(default=None, index=True)  # Reference to task
+    action: str = Field(sa_column=Column(saEnum("created", "updated", "deleted", "completed", name="action_enum")))  # Action performed
+    details: Optional[str] = Field(default=None)  # JSON field for task data or changes
+    timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)  # Timestamp of the event
+    correlation_id: Optional[str] = Field(default=None)  # For tracking related events in event flows
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -37,6 +62,9 @@ TASK_EVENTS_TOPIC = "task-events"
 async def startup_event():
     """Initialize the Kafka consumer and start listening for events."""
     logger.info("Starting Audit Service...")
+    # Create all tables
+    from sqlmodel import SQLModel
+    SQLModel.metadata.create_all(engine)
     # Start the Kafka consumer in a background task
     asyncio.create_task(consume_task_events())
 
@@ -56,11 +84,16 @@ def log_audit_entry(event_data: Dict[str, Any]):
         timestamp = event_data.get('timestamp')
         correlation_id = event_data.get('correlation_id', '')
 
+        # Skip if critical fields are missing
+        if user_id is None:
+            logger.warning("Event missing user_id, skipping audit log entry")
+            return
+
         # Create an audit log entry
         audit_entry = AuditLog(
             user_id=user_id,
-            task_id=task_id,
-            action=event_type,
+            task_id=task_id if task_id is not None else None,
+            action=event_type if event_type is not None else "unknown",
             details=json.dumps(task_data),  # Store the full task data as JSON
             timestamp=datetime.fromisoformat(timestamp.replace('Z', '+00:00')) if timestamp else datetime.utcnow(),
             correlation_id=correlation_id
@@ -136,11 +169,11 @@ async def health():
 
 
 @app.get("/audit-logs/{user_id}")
-async def get_audit_logs_for_user(user_id: str):
+def get_audit_logs_for_user(user_id: str):
     """Retrieve audit logs for a specific user."""
     try:
         with Session(engine) as session:
-            statement = select(AuditLog).where(AuditLog.user_id == user_id).order_by(AuditLog.timestamp.desc())
+            statement = select(AuditLog).where(AuditLog.user_id == user_id).order_by(desc(AuditLog.timestamp))
             audit_logs = session.exec(statement).all()
             return audit_logs
     except Exception as e:
@@ -149,11 +182,11 @@ async def get_audit_logs_for_user(user_id: str):
 
 
 @app.get("/audit-logs/task/{task_id}")
-async def get_audit_logs_for_task(task_id: int):
+def get_audit_logs_for_task(task_id: int):
     """Retrieve audit logs for a specific task."""
     try:
         with Session(engine) as session:
-            statement = select(AuditLog).where(AuditLog.task_id == task_id).order_by(AuditLog.timestamp.desc())
+            statement = select(AuditLog).where(AuditLog.task_id == task_id).order_by(desc(AuditLog.timestamp))
             audit_logs = session.exec(statement).all()
             return audit_logs
     except Exception as e:
