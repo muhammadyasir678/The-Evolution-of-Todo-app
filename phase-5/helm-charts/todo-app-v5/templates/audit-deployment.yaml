@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-audit
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: audit-service
+spec:
+  replicas: {{ .Values.auditService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-app-v5.selectorLabels" . | nindent 6 }}
+      app: audit-service
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app-v5.selectorLabels" . | nindent 8 }}
+        app: audit-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "audit-service"
+        dapr.io/app-port: "{{ .Values.auditService.service.port }}"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: audit-service
+        image: "{{ .Values.auditService.image.repository }}:{{ .Values.auditService.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.auditService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.auditService.service.port }}
+        env:
+        - name: SERVICE_PORT
+          value: "{{ .Values.auditService.service.port }}"
+        - name: KAFKA_BROKERS
+          value: {{ .Values.kafka.brokers | quote }}
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-app-v5.fullname" . }}-secrets
+              key: databaseUrl
+        - name: NODE_ENV
+          value: "production"
+        - name: DAPR_HTTP_ENDPOINT
+          value: "http://127.0.0.1:3500"
+        resources:
+{{ toYaml .Values.auditService.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.auditService.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.auditService.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

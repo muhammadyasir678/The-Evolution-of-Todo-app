@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-recurring-task-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: recurring-task-service
+spec:
+  selector:
+    app: recurring-task-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.recurringTaskService.service.port }}
+      targetPort: {{ .Values.recurringTaskService.service.port }}
+  type: {{ .Values.recurringTaskService.service.type }}

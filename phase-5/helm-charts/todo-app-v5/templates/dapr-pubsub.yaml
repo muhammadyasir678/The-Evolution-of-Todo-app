@@ -1,0 +1,19 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-kafka-pubsub
+  namespace: {{ .Values.namespace }}
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+  - name: brokers
+    value: {{ .Values.kafka.brokers | quote }}
+  - name: authType
+    value: "plaintext"  # Change to "mtls" or "saslPlaintext" for production
+  - name: consumerGroup
+    value: "dapr-consumer-group"
+  - name: clientID
+    value: "dapr-kafka-client"
+  - name: authRequired
+    value: "false"

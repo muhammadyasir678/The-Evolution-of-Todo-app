@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-frontend
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-app-v5.selectorLabels" . | nindent 6 }}
+      app: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app-v5.selectorLabels" . | nindent 8 }}
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.frontend.service.port }}
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: {{ .Values.config.data.NEXT_PUBLIC_API_URL | quote }}
+        - name: PORT
+          value: {{ .Values.config.data.PORT | quote }}
+        - name: NODE_ENV
+          value: "production"
+        resources:
+{{ toYaml .Values.frontend.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.frontend.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.frontend.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

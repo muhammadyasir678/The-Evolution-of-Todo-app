@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-postgresql-statestore
+  namespace: {{ .Values.namespace }}
+spec:
+  type: state.postgresql
+  version: v1
+  metadata:
+  - name: connectionString
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "todo-app-v5.fullname" . }}-secrets
+        key: databaseUrl
+  - name: actorStateStore
+    value: "true"

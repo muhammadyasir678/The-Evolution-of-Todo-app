@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-websocket
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: websocket-service
+spec:
+  replicas: {{ .Values.websocketService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-app-v5.selectorLabels" . | nindent 6 }}
+      app: websocket-service
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app-v5.selectorLabels" . | nindent 8 }}
+        app: websocket-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "websocket-service"
+        dapr.io/app-port: "{{ .Values.websocketService.service.port }}"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: websocket-service
+        image: "{{ .Values.websocketService.image.repository }}:{{ .Values.websocketService.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.websocketService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.websocketService.service.port }}
+        env:
+        - name: SERVICE_PORT
+          value: "{{ .Values.websocketService.service.port }}"
+        - name: KAFKA_BROKERS
+          value: {{ .Values.kafka.brokers | quote }}
+        - name: NODE_ENV
+          value: "production"
+        - name: DAPR_HTTP_ENDPOINT
+          value: "http://127.0.0.1:3500"
+        resources:
+{{ toYaml .Values.websocketService.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.websocketService.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.websocketService.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

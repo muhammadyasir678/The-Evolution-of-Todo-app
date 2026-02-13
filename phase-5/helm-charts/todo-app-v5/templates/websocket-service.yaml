@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-websocket-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: websocket-service
+spec:
+  selector:
+    app: websocket-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.websocketService.service.port }}
+      targetPort: {{ .Values.websocketService.service.port }}
+  type: {{ .Values.websocketService.service.type }}

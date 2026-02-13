@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-notification
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: notification-service
+spec:
+  replicas: {{ .Values.notificationService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-app-v5.selectorLabels" . | nindent 6 }}
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app-v5.selectorLabels" . | nindent 8 }}
+        app: notification-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "notification-service"
+        dapr.io/app-port: "{{ .Values.notificationService.service.port }}"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: notification-service
+        image: "{{ .Values.notificationService.image.repository }}:{{ .Values.notificationService.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.notificationService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.notificationService.service.port }}
+        env:
+        - name: SERVICE_PORT
+          value: "{{ .Values.notificationService.service.port }}"
+        - name: KAFKA_BROKERS
+          value: {{ .Values.kafka.brokers | quote }}
+        - name: SENDGRID_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-app-v5.fullname" . }}-secrets
+              key: sendgridApiKey
+        - name: NODE_ENV
+          value: "production"
+        - name: DAPR_HTTP_ENDPOINT
+          value: "http://127.0.0.1:3500"
+        resources:
+{{ toYaml .Values.notificationService.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.notificationService.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.notificationService.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

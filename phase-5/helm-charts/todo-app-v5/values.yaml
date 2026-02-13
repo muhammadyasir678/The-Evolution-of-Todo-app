@@ -197,17 +197,6 @@ secrets:
   databaseUrl: ""
   openaiApiKey: ""
   authSecret: ""
+  sendgridApiKey: ""
 
 namespace: todo-app
-
-# Additional settings for Phase V
-kafka:
-  brokers: "kafka.kafka.svc.cluster.local:9092"
-  topics:
-    taskEvents: "task-events"
-    reminders: "reminders"
-    taskUpdates: "task-updates"
-
-dapr:
-  enabled: true
-  version: "1.9.0"

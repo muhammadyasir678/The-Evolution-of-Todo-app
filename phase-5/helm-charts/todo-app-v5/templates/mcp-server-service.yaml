@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-mcp-server-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: mcp-server
+spec:
+  selector:
+    app: mcp-server
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mcpServer.service.port }}
+      targetPort: {{ .Values.mcpServer.service.port }}
+  type: {{ .Values.mcpServer.service.type }}

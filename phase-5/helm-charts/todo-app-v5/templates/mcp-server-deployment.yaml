@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-mcp-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app-v5.labels" . | nindent 4 }}
+    app: mcp-server
+spec:
+  replicas: {{ .Values.mcpServer.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-app-v5.selectorLabels" . | nindent 6 }}
+      app: mcp-server
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app-v5.selectorLabels" . | nindent 8 }}
+        app: mcp-server
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "mcp-server"
+        dapr.io/app-port: "{{ .Values.mcpServer.service.port }}"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-as-json: "true"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: mcp-server
+        image: "{{ .Values.mcpServer.image.repository }}:{{ .Values.mcpServer.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.mcpServer.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.mcpServer.service.port }}
+        env:
+        - name: MCP_SERVER_PORT
+          value: {{ .Values.config.data.MCP_SERVER_PORT | quote }}
+        resources:
+{{ toYaml .Values.mcpServer.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.mcpServer.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.mcpServer.service.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
