@@ -1,0 +1,122 @@
+# Single-node Redpanda configuration for local development
+# This is a simplified configuration for development purposes
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda-single
+  namespace: kafka
+  labels:
+    app: redpanda-single
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda-single
+  template:
+    metadata:
+      labels:
+        app: redpanda-single
+    spec:
+      containers:
+      - name: redpanda
+        image: docker.redpanda.com/redpandadata/redpanda:v23.2.15
+        command:
+          - redpanda
+          - start
+          - --smp
+          - "1"
+          - --memory
+          - 1G
+          - --reserve-memory
+          - 100M
+          - --overprovisioned
+          - --node-id
+          - "0"
+          - --check=false
+          - --kafka-addr
+          - "PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093"
+          - --advertise-kafka-addr
+          - "PLAINTEXT://redpanda-single:9092,OUTSIDE://localhost:9093"
+        ports:
+        - containerPort: 9092
+          name: kafka-int
+        - containerPort: 9093
+          name: kafka-ext
+        - containerPort: 8081
+          name: schema-registry
+        - containerPort: 8082
+          name: http-proxy
+        volumeMounts:
+        - name: redpanda-data
+          mountPath: /var/lib/redpanda/data
+      volumes:
+      - name: redpanda-data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda-single
+  namespace: kafka
+  labels:
+    app: redpanda-single
+spec:
+  selector:
+    app: redpanda-single
+  ports:
+  - name: kafka-int
+    port: 9092
+    targetPort: 9092
+  - name: kafka-ext
+    port: 9093
+    targetPort: 9093
+  - name: schema-registry
+    port: 8081
+    targetPort: 8081
+  - name: http-proxy
+    port: 8082
+    targetPort: 8082
+  type: ClusterIP
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: task-events
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: redpanda-single
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: 604800000  # 7 days
+    segment.bytes: 1073741824 # 1 GiB
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: reminders
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: redpanda-single
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: 604800000  # 7 days
+    segment.bytes: 1073741824 # 1 GiB
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: task-updates
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: redpanda-single
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: 604800  # 10 minutes (shorter for real-time updates)
+    segment.bytes: 1073741824 # 1 GiB

@@ -18,7 +18,7 @@ This phase focuses on implementing advanced cloud deployment features with:
 ## Architecture
 
 ### Event-Driven Architecture
-- Kafka topics: `task-events`, `reminders`, `task-updates`
+- Kafka-compatible topics via Redpanda: `task-events`, `reminders`, `task-updates`
 - Microservices for different concerns:
   - Recurring Task Service
   - Notification Service
@@ -26,7 +26,7 @@ This phase focuses on implementing advanced cloud deployment features with:
   - WebSocket Service
 
 ### Dapr Integration
-- Pub/Sub for Kafka messaging
+- Pub/Sub for Kafka-compatible messaging via Redpanda
 - State management for conversation state
 - Service invocation for inter-service communication
 - Secrets management for credentials
@@ -43,14 +43,14 @@ This phase focuses on implementing advanced cloud deployment features with:
 ## Deployment
 
 ### Local Deployment (Minikube)
-1. Deploy Kafka using Strimzi operator
+1. Deploy Kafka-compatible Redpanda cluster
 2. Deploy Dapr to Minikube
 3. Build Docker images for all services
 4. Deploy using Helm chart
 
 ### Cloud Deployment (AKS/GKE/DOKS)
 1. Set up cloud Kubernetes cluster
-2. Configure managed Kafka (Redpanda Cloud or Confluent Cloud)
+2. Configure managed Kafka (Redpanda Cloud)
 3. Install Dapr on cloud K8s
 4. Deploy via CI/CD pipeline
 
@@ -91,12 +91,12 @@ phase-5/
 ### Local Development
 1. Start Minikube with sufficient resources
 2. Install Dapr in Minikube
-3. Deploy Kafka using Strimzi
+3. Deploy Kafka-compatible Redpanda cluster
 4. Build and deploy all services using Helm
 
 ### Cloud Deployment
 1. Set up cloud Kubernetes cluster
-2. Configure managed Kafka
+2. Configure managed Kafka (Redpanda Cloud)
 3. Install Dapr on cloud cluster
 4. Configure CI/CD pipeline with appropriate secrets
 5. Push to main branch to trigger deployment
@@ -126,7 +126,7 @@ phase-5/
 - Cross-device synchronization
 
 ### Event-Driven Architecture
-- All task operations publish events to Kafka
+- All task operations publish events to Kafka-compatible Redpanda
 - Consumer services process events asynchronously
 - Audit logging of all operations
 - Decoupled service communication

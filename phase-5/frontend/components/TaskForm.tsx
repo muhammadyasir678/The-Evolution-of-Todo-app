@@ -164,27 +164,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
         </div>
 
         {/* Due Date and Reminder */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Due Date
-            </label>
-            <TaskDueDate dueDate={dueDate} setDueDate={setDueDate} />
-          </div>
-          
-          <div>
-            <label htmlFor="reminderTime" className="block text-sm font-medium text-gray-700 mb-1">
-              Reminder Time
-            </label>
-            <input
-              type="time"
-              id="reminderTime"
-              value={reminderTime}
-              onChange={(e) => setReminderTime(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              disabled={loading}
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Due Date and Reminder
+          </label>
+          <TaskDueDate 
+            dueDate={dueDate} 
+            reminderTime={reminderTime} 
+            onDueDateChange={setDueDate} 
+            onReminderChange={setReminderTime} 
+          />
         </div>
 
         {/* Recurrence Pattern */}
@@ -192,11 +181,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Recurrence
           </label>
-          <TaskRecurrence 
-            recurrencePattern={recurrencePattern} 
-            setRecurrencePattern={setRecurrencePattern}
+          <TaskRecurrence
+            recurrencePattern={recurrencePattern}
             recurrenceInterval={recurrenceInterval}
-            setRecurrenceInterval={setRecurrenceInterval}
+            onPatternChange={setRecurrencePattern}
+            onIntervalChange={setRecurrenceInterval}
           />
         </div>
 

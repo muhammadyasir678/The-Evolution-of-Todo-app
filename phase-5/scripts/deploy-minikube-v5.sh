@@ -40,14 +40,13 @@ docker images | grep -E "(todo-frontend|todo-backend|todo-mcp-server|recurring-t
 echo "Creating todo-app namespace..."
 kubectl create namespace todo-app --dry-run=client -o yaml | kubectl apply -f -
 
-# Deploy Kafka using Strimzi
-echo "Deploying Kafka with Strimzi..."
+# Deploy Kafka using Redpanda
+echo "Deploying Kafka with Redpanda..."
 kubectl create namespace kafka --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -f https://strimzi.io/install/latest?namespace=kafka
-kubectl apply -f k8s/kafka/strimzi-kafka.yaml
+kubectl apply -f k8s/kafka/redpanda-kafka.yaml
 
-echo "Waiting for Kafka cluster to be ready..."
-kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka
+echo "Waiting for Redpanda cluster to be ready..."
+kubectl wait --for=condition=ready pod -l app=redpanda-single -n kafka --timeout=300s
 
 # Deploy Dapr
 echo "Installing Dapr..."
@@ -55,9 +54,13 @@ dapr init -k
 
 # Apply Dapr components
 echo "Applying Dapr components..."
-kubectl apply -f k8s/dapr/pubsub.yaml
+kubectl apply -f k8s/dapr/config.yaml
+kubectl apply -f k8s/dapr/pubsub.yaml  # Local Kafka configuration
 kubectl apply -f k8s/dapr/statestore.yaml
 kubectl apply -f k8s/dapr/secretstore.yaml
+kubectl apply -f k8s/dapr/bindings.cron.yaml
+kubectl apply -f k8s/dapr/reminder-cron-binding.yaml
+kubectl apply -f k8s/dapr/backend-reminder-subscription.yaml
 
 # Create secrets for the application
 echo "Creating application secrets..."

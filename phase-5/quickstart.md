@@ -83,17 +83,11 @@ dapr status -k
 # Create Kafka namespace
 kubectl create namespace kafka
 
-# Install Strimzi operator
-kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+# Deploy Redpanda (Kafka-compatible) cluster and topics
+kubectl apply -f k8s/kafka/redpanda-kafka.yaml
 
-# Wait for the operator to be ready
-kubectl wait --for=condition=ready pod -l name=strimzi-cluster-operator -n kafka --timeout=300s
-
-# Deploy Kafka cluster and topics
-kubectl apply -f k8s/kafka/strimzi-kafka.yaml
-
-# Wait for Kafka cluster to be ready
-kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka
+# Wait for Redpanda cluster to be ready
+kubectl wait --for=condition=ready pod -l app=redpanda-single -n kafka --timeout=300s
 ```
 
 ### 2. Apply Dapr Components
@@ -113,10 +107,10 @@ eval $(minikube docker-env)
 ### 4. Build Docker Images
 ```bash
 # Build frontend image
-docker build -t todo-frontend:latest -f ../phase-3/frontend/Dockerfile ../phase-3/frontend
+docker build -t todo-frontend:latest -f ../phase-2/frontend/Dockerfile ../phase-3/frontend
 
 # Build backend image
-docker build -t todo-backend:latest -f ../phase-3/backend/Dockerfile ../phase-3/backend
+docker build -t todo-backend:latest -f ../phase-5/backend/Dockerfile ../phase-3/backend
 
 # Build MCP server image
 docker build -t todo-mcp-server:latest -f ../phase-3/mcp-server/Dockerfile ../phase-3/mcp-server
@@ -224,13 +218,12 @@ kubectl exec -it deployment/backend -n todo-app -- curl -v http://websocket-serv
 ### 3. Verify Kafka Topics
 ```bash
 # Check Kafka topics exist and have messages
-kubectl exec -it my-cluster-kafka-0 -n kafka -- \
-  bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+kubectl exec -it deployment/redpanda-single -n kafka -- \
+  rpk topic list
 
 # Check messages in task-events topic
-kubectl exec -it my-cluster-kafka-0 -n kafka -- \
-  bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
-  --topic task-events --from-beginning --max-messages 5
+kubectl exec -it deployment/redpanda-single -n kafka -- \
+  rpk topic consume task-events --num 5
 ```
 
 ### 4. Check Application Functionality
@@ -284,16 +277,16 @@ kubectl logs deployment/websocket-service -n todo-app
 
 ### Issue: Kafka Connection Problems
 **Symptom**: Services can't connect to Kafka
-**Solution**: 
+**Solution**:
 ```bash
-# Check Kafka pods
+# Check Redpanda pods
 kubectl get pods -n kafka
 
-# Check Kafka endpoints
+# Check Redpanda service
 kubectl get svc -n kafka
 
-# Check Kafka logs
-kubectl logs -f deployment/my-cluster-kafka -n kafka
+# Check Redpanda logs
+kubectl logs -f deployment/redpanda-single -n kafka
 ```
 
 ### Issue: Dapr Sidecar Problems
@@ -318,8 +311,7 @@ helm uninstall todo-app-v5 -n todo-app
 kubectl delete namespace todo-app
 
 # Remove Kafka
-kubectl delete -f k8s/kafka/strimzi-kafka.yaml
-kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+kubectl delete -f k8s/kafka/redpanda-kafka.yaml
 kubectl delete namespace kafka
 
 # Remove Dapr components

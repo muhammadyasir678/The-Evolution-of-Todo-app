@@ -1,3 +1,5 @@
+{{- if not .Values.kafka.useCloud }}
+# Local Kafka configuration using Strimzi (for Minikube/development)
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
@@ -84,3 +86,4 @@ spec:
   config:
     retention.ms: 604800  # 10 minutes (shorter for real-time updates)
     segment.bytes: 1073741824 # 1 GiB
+{{- end }}

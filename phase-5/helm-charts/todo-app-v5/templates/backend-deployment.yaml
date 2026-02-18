@@ -48,7 +48,7 @@ spec:
               name: {{ include "todo-app-v5.fullname" . }}-secrets
               key: authSecret
         - name: KAFKA_BROKERS
-          value: {{ .Values.kafka.brokers | quote }}
+          value: {{ if .Values.kafka.useCloud }}{{ .Values.kafka.cloudBrokers | quote }}{{ else }}{{ .Values.kafka.localBrokers | quote }}{{ end }}
         - name: BACKEND_PORT
           value: {{ .Values.config.data.BACKEND_PORT | quote }}
         - name: NODE_ENV

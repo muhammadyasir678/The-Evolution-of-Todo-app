@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Subscription
+metadata:
+  name: reminder-cron-subscription
+  namespace: todo-app
+spec:
+  topic: reminder-cron-topic
+  route: /api/reminders/cron-handler
+  pubsubname: kafka-pubsub
+---
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: reminder-cron
+  namespace: todo-app
+spec:
+  type: bindings.cron
+  version: v1
+  metadata:
+  - name: schedule
+    value: "*/5 * * * *"  # Every 5 minutes

@@ -1,0 +1,38 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: dapr-config
+  namespace: todo-app
+spec:
+  tracing:
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: "http://zipkin.default.svc.cluster.local:9411/api/v2/spans"
+  metric:
+    enabled: true
+  secretStore:
+    name: kubernetes-secret-store
+  accessControl:
+    defaultAction: allow
+    trustDomain: "todo-app"
+    policies:
+    - appId: "backend"
+      defaultAction: allow
+      trustDomain: "todo-app"
+      namespace: "todo-app"
+    - appId: "recurring-task-service"
+      defaultAction: allow
+      trustDomain: "todo-app"
+      namespace: "todo-app"
+    - appId: "notification-service"
+      defaultAction: allow
+      trustDomain: "todo-app"
+      namespace: "todo-app"
+    - appId: "websocket-service"
+      defaultAction: allow
+      trustDomain: "todo-app"
+      namespace: "todo-app"
+    - appId: "audit-service"
+      defaultAction: allow
+      trustDomain: "todo-app"
+      namespace: "todo-app"

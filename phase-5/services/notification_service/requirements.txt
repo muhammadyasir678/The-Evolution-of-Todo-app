@@ -1,0 +1,8 @@
+fastapi>=0.104.1
+uvicorn>=0.24.0
+kafka-python>=2.0.2
+dapr-ext-fastapi>=1.9.0
+web-push>=3.0.1
+sendgrid>=6.10.0
+httpx>=0.25.2
+python-dotenv>=1.0.0

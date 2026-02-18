@@ -6,7 +6,8 @@ metadata:
   labels:
     {{- include "todo-app-v5.labels" . | nindent 4 }}
 data:
-  NEXT_PUBLIC_API_URL: {{ .Values.config.data.NEXT_PUBLIC_API_URL | quote }}
+  NEXT_PUBLIC_API_URL: "http://{{ include "todo-app-v5.fullname" . }}-backend-service:{{ .Values.backend.service.port }}"
+  NEXT_PUBLIC_WEBSOCKET_URL: "ws://{{ include "todo-app-v5.fullname" . }}-websocket-service:{{ .Values.websocketService.service.port }}"
   PORT: {{ .Values.config.data.PORT | quote }}
   BACKEND_PORT: {{ .Values.config.data.BACKEND_PORT | quote }}
   MCP_SERVER_PORT: {{ .Values.config.data.MCP_SERVER_PORT | quote }}

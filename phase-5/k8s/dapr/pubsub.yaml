@@ -8,7 +8,7 @@ spec:
   version: v1
   metadata:
   - name: brokers
-    value: "kafka.kafka.svc.cluster.local:9092"  # Update for cloud: "pkc-XXXXX.region.provider.confluent.cloud:9092"
+    value: "redpanda-single.kafka.svc.cluster.local:9092"  # Internal service address for Redpanda
   - name: authType
     value: "plaintext"  # Change to "mtls" or "saslPlaintext" for production
   - name: consumerGroup

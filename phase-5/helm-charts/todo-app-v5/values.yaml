@@ -164,7 +164,12 @@ websocketService:
 
 # Additional settings for Phase V
 kafka:
-  brokers: "kafka.kafka.svc.cluster.local:9092"
+  # For local deployment (Minikube with Redpanda)
+  localBrokers: "redpanda-single.kafka.svc.cluster.local:9092"
+  # For cloud deployment (Redpanda Cloud)
+  cloudBrokers: "YOUR-REDPANDA-CLUSTER.region.provider.redpanda.cloud:9092"  # Replace with your actual cluster
+  # Set to true to use cloud brokers instead of local
+  useCloud: false
   topics:
     taskEvents: "task-events"
     reminders: "reminders"
@@ -198,5 +203,17 @@ secrets:
   openaiApiKey: ""
   authSecret: ""
   sendgridApiKey: ""
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
 
 namespace: todo-app

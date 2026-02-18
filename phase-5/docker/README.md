@@ -66,10 +66,10 @@ To build a specific service:
 
 ```bash
 # Build frontend
-docker build -f frontend.Dockerfile -t todo-frontend:latest ../phase-3/frontend
+docker build -f frontend.Dockerfile -t todo-frontend:latest ../phase-2/frontend
 
 # Build backend
-docker build -f backend.Dockerfile -t todo-backend:latest ../phase-3/backend
+docker build -f backend.Dockerfile -t todo-backend:latest ../phase-5/backend
 
 # Build MCP server
 docker build -f mcp-server.Dockerfile -t todo-mcp-server:latest ../phase-3/mcp-server

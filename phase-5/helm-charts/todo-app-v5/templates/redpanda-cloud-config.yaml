@@ -1,0 +1,15 @@
+{{- if .Values.kafka.useCloud }}
+# Redpanda Cloud configuration (for production on AKS)
+# This is a placeholder since Redpanda Cloud is a managed service
+# In a real implementation, you would not deploy Kafka locally but connect to the cloud service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "todo-app-v5.fullname" . }}-redpanda-config
+  namespace: {{ .Values.namespace }}
+data:
+  # Configuration for connecting to Redpanda Cloud
+  REDPANDA_CLOUD_BROKER: {{ .Values.kafka.cloudBrokers | quote }}
+  REDPANDA_CLOUD_ENABLED: "true"
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.cloudBrokers | quote }}
+{{- end }}

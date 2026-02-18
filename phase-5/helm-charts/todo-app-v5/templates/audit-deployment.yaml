@@ -35,7 +35,7 @@ spec:
         - name: SERVICE_PORT
           value: "{{ .Values.auditService.service.port }}"
         - name: KAFKA_BROKERS
-          value: {{ .Values.kafka.brokers | quote }}
+          value: {{ if .Values.kafka.useCloud }}{{ .Values.kafka.cloudBrokers | quote }}{{ else }}{{ .Values.kafka.localBrokers | quote }}{{ end }}
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:

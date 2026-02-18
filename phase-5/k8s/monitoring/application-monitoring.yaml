@@ -1,0 +1,53 @@
+# Add these annotations to your existing deployments to enable Prometheus metrics scraping
+
+# Example for backend deployment:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-monitoring-annotations
+  namespace: todo-app
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+    prometheus.io/path: "/metrics"
+spec:
+  # This would be added to the existing backend deployment
+  # The actual implementation would modify the existing deployment
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: backend
+        # existing container configuration
+        ports:
+        - containerPort: 8000
+        # Add metrics endpoint exposure if using a metrics library
+
+---
+# Example for other services:
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service-monitoring
+  namespace: todo-app
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP

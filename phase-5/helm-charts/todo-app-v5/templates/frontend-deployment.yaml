@@ -26,9 +26,20 @@ spec:
         - containerPort: {{ .Values.frontend.service.port }}
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: {{ .Values.config.data.NEXT_PUBLIC_API_URL | quote }}
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-app-v5.fullname" . }}-config
+              key: NEXT_PUBLIC_API_URL
+        - name: NEXT_PUBLIC_WEBSOCKET_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-app-v5.fullname" . }}-config
+              key: NEXT_PUBLIC_WEBSOCKET_URL
         - name: PORT
-          value: {{ .Values.config.data.PORT | quote }}
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "todo-app-v5.fullname" . }}-config
+              key: PORT
         - name: NODE_ENV
           value: "production"
         resources:
