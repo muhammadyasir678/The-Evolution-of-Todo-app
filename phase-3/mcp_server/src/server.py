@@ -4,7 +4,7 @@ Initialize MCP Server with name "todo-mcp-server" and register all 5 tools
 """
 import asyncio
 from mcp.server import Server
-from mcp.types import TextContent,ListPromptsResult, GetPromptResult, Prompt
+from mcp.types import TextContent, PromptMessage, ListPromptsResult, GetPromptResult, Prompt
 from pydantic import BaseModel
 from typing import List
 import json
@@ -28,8 +28,7 @@ async def handle_get_prompt(name: str, arguments: dict[str, str] | None = None) 
         prompt=Prompt(
             name=name,
             description="Todo prompt",
-            arguments=[],
-            messages=[]
+            messages=[PromptMessage(content=TextContent(type="text", text="Default prompt"))]
         )
     )
 
@@ -59,6 +58,7 @@ async def handle_delete_task(params: DeleteTaskRequest) -> dict:
 async def handle_update_task(params: UpdateTaskRequest) -> dict:
     """Handle update_task tool calls."""
     return await update_task(params)
+
 
 async def main():
     """Main entry point for the MCP server with stdio transport."""

@@ -8,6 +8,8 @@ from mcp.types import TextContent
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from sqlmodel import create_engine, Session, select
+from datetime import datetime
+import json
 # Import models from backend - add backend to path
 import sys
 import os
@@ -36,6 +38,8 @@ class ListTasksRequest(BaseModel):
     user_id: str
     status: Optional[str] = None  # "all", "completed", "pending"
 
+
+
 class CompleteTaskRequest(BaseModel):
     """Request model for complete_task MCP tool."""
     user_id: str
@@ -53,20 +57,19 @@ class UpdateTaskRequest(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
 
+
+
 async def add_task(request: AddTaskRequest) -> Dict[str, Any]:
     """
     MCP Tool T020: Implement add_task tool with parameters: user_id, title, description
     """
     with Session(engine) as session:
         try:
-            # Create new task
-            task_data = TaskCreate(
+            # Create task instance with only the basic fields that are guaranteed to exist
+            task = Task(
                 title=request.title,
                 description=request.description or "",
-                completed=False
-            )
-            task = Task(
-                **task_data.model_dump(),
+                completed=False,
                 user_id=request.user_id
             )
 
@@ -87,6 +90,7 @@ async def add_task(request: AddTaskRequest) -> Dict[str, Any]:
                 "error": str(e),
                 "message": "Failed to create task"
             }
+
 
 async def list_tasks(request: ListTasksRequest) -> Dict[str, Any]:
     """
@@ -133,6 +137,7 @@ async def list_tasks(request: ListTasksRequest) -> Dict[str, Any]:
                 "message": "Failed to retrieve tasks"
             }
 
+
 async def complete_task(request: CompleteTaskRequest) -> Dict[str, Any]:
     """
     MCP Tool T022: Implement complete_task tool with parameters: user_id, task_id
@@ -174,6 +179,7 @@ async def complete_task(request: CompleteTaskRequest) -> Dict[str, Any]:
                 "message": "Failed to complete task"
             }
 
+
 async def delete_task(request: DeleteTaskRequest) -> Dict[str, Any]:
     """
     MCP Tool T023: Implement delete_task tool with parameters: user_id, task_id
@@ -211,6 +217,7 @@ async def delete_task(request: DeleteTaskRequest) -> Dict[str, Any]:
                 "error": str(e),
                 "message": "Failed to delete task"
             }
+
 
 async def update_task(request: UpdateTaskRequest) -> Dict[str, Any]:
     """
@@ -257,3 +264,5 @@ async def update_task(request: UpdateTaskRequest) -> Dict[str, Any]:
                 "error": str(e),
                 "message": "Failed to update task"
             }
+
+
