@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routes import tasks
 from .routes import auth
 from .routes import chat
+from .routes import reminders
+from .websocket import router as websocket_router
 from .database import create_tables
 import os
 
@@ -29,10 +31,12 @@ app.add_middleware(
     allow_origin_regex=r"https://the-evolution-of-todo-app-mu.vercel.app",  # For Vercel deployments
 )
 
-# Include the auth, task, and chat routes
+# Include the auth, task, chat, reminders, and websocket routes
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(chat.router)
+app.include_router(reminders.router)
+app.include_router(websocket_router)
 
 @app.on_event("startup")
 def on_startup():

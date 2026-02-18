@@ -1,11 +1,13 @@
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from ..database import get_session
 from ..models import Task, TaskCreate, TaskUpdate, TaskPublic
 from ..auth import get_current_user
 from ..dapr_publisher import publish_task_event, publish_reminder_event, publish_task_update_event
+from ..websocket import notify_user_task_change
 
 router = APIRouter(prefix="/api/{user_id}", tags=["tasks"])
 
@@ -89,7 +91,7 @@ def create_task(
     session.add(db_task)
     session.commit()
     session.refresh(db_task)
-    
+
     # Publish task creation event to Kafka
     try:
         task_dict = {
@@ -110,15 +112,125 @@ def create_task(
         }
         publish_task_event(task_dict, "created")
         publish_task_update_event(user_id, task_dict, "created")
-        
+
         # If the task has a reminder, publish to the reminders topic
         if db_task.reminder_time:
             publish_reminder_event(task_dict)
+        
+        # Notify user via WebSocket about the new task
+        asyncio.create_task(notify_user_task_change(user_id, task_dict, "create"))
     except Exception as e:
         # Log the error but don't fail the task creation
         print(f"Error publishing task creation event: {str(e)}")
-    
+
     return db_task
+
+
+@router.get("/tasks/filtered", response_model=List[TaskPublic])
+def get_filtered_tasks(
+    user_id: str,
+    current_user_id: str = Depends(get_current_user),
+    session: Session = Depends(get_session),
+    priority: Optional[str] = None,
+    tags: Optional[str] = None,  # Comma-separated tags
+    status_filter: Optional[str] = None,  # all, pending, completed
+    due_after: Optional[str] = None,  # ISO format date string
+    due_before: Optional[str] = None,  # ISO format date string
+    sort_by: Optional[str] = "created_at",  # due_date, priority, created_date, title
+    sort_order: Optional[str] = "desc"  # asc, desc
+):
+    """
+    Retrieve filtered and sorted tasks for the specified user.
+
+    Args:
+        user_id: The ID of the user whose tasks to retrieve
+        current_user_id: The ID of the currently authenticated user (from JWT)
+        session: Database session
+        priority: Filter by priority (high, medium, low)
+        tags: Filter by tags (comma-separated)
+        status_filter: Filter by status (all, pending, completed)
+        due_after: Filter tasks with due date after this date (ISO format)
+        due_before: Filter tasks with due date before this date (ISO format)
+        sort_by: Sort by field (due_date, priority, created_date, title)
+        sort_order: Sort order (asc, desc)
+
+    Returns:
+        List[TaskPublic]: A list of tasks matching the filters
+
+    Raises:
+        HTTPException: If the user_id in URL doesn't match the authenticated user
+    """
+    # Verify that the requested user_id matches the authenticated user_id
+    if user_id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Cannot access another user's tasks"
+        )
+
+    # Build the query with filters
+    statement = select(Task).where(Task.user_id == user_id)
+
+    # Apply priority filter
+    if priority:
+        statement = statement.where(Task.priority == priority)
+
+    # Apply status filter
+    if status_filter and status_filter != "all":
+        if status_filter == "pending":
+            statement = statement.where(Task.completed == False)
+        elif status_filter == "completed":
+            statement = statement.where(Task.completed == True)
+
+    # Apply due date range filters
+    # Only apply these filters if the Task.due_date column is not None
+    if due_after:
+        due_after_dt = datetime.fromisoformat(due_after.replace('Z', '+00:00'))
+        # Chain where clauses separately to avoid None comparison issues
+        statement = statement.where(Task.due_date != None).where(Task.due_date >= due_after_dt)
+
+    if due_before:
+        due_before_dt = datetime.fromisoformat(due_before.replace('Z', '+00:00'))
+        # Chain where clauses separately to avoid None comparison issues
+        statement = statement.where(Task.due_date != None).where(Task.due_date <= due_before_dt)
+
+    # Apply tags filter - handling comma-separated tags
+    if tags:
+        tag_list = tags.split(',')
+        # For now, we'll check if any of the tags appear in the tags field
+        # In a more sophisticated implementation, we might store tags as a JSON array
+        # and use proper array containment operators
+        for tag in tag_list:
+            tag_value = tag.strip()
+            # Using ilike for case-insensitive substring matching in the tags field
+            # Need to check if Task.tags is not None before applying the filter
+            statement = statement.where(Task.tags != None).where(Task.tags.like(f'%{tag_value}%'))
+
+    # Apply sorting
+    if sort_by == "due_date":
+        if sort_order == "asc":
+            # Handle NULL values in sorting by putting them last
+            statement = statement.order_by(Task.due_date.asc().nullslast())
+        else:
+            statement = statement.order_by(Task.due_date.desc().nullslast())
+    elif sort_by == "priority":
+        if sort_order == "asc":
+            statement = statement.order_by(Task.priority.asc())
+        else:
+            statement = statement.order_by(Task.priority.desc())
+    elif sort_by == "title":
+        if sort_order == "asc":
+            statement = statement.order_by(Task.title.asc())
+        else:
+            statement = statement.order_by(Task.title.desc())
+    else:  # Default to created_at
+        if sort_order == "asc":
+            statement = statement.order_by(Task.created_at.asc())
+        else:
+            statement = statement.order_by(Task.created_at.desc())
+
+    # Execute the query
+    tasks = session.exec(statement).all()
+    return tasks
 
 
 @router.get("/tasks/{task_id}", response_model=TaskPublic)
@@ -227,12 +339,12 @@ def update_task(
     for field, value in update_data.items():
         if hasattr(db_task, field):
             setattr(db_task, field, value)
-    db_task.updated_at = datetime.utcnow()
+    db_task.updated_at = datetime.now(timezone.utc)
 
     session.add(db_task)
     session.commit()
     session.refresh(db_task)
-    
+
     # Publish task update event to Kafka
     try:
         updated_task_data = {
@@ -253,14 +365,17 @@ def update_task(
         }
         publish_task_event(updated_task_data, "updated")
         publish_task_update_event(user_id, updated_task_data, "updated")
-        
+
         # If the task has a reminder, publish to the reminders topic
         if db_task.reminder_time:
             publish_reminder_event(updated_task_data)
+        
+        # Notify user via WebSocket about the updated task
+        asyncio.create_task(notify_user_task_change(user_id, updated_task_data, "update"))
     except Exception as e:
         # Log the error but don't fail the task update
         print(f"Error publishing task update event: {str(e)}")
-    
+
     return db_task
 
 
@@ -321,11 +436,14 @@ def delete_task(
     # Delete the task
     session.delete(db_task)
     session.commit()
-    
+
     # Publish task deletion event to Kafka
     try:
         publish_task_event(task_data, "deleted")
         publish_task_update_event(user_id, task_data, "deleted")
+        
+        # Notify user via WebSocket about the deleted task
+        asyncio.create_task(notify_user_task_change(user_id, task_data, "delete"))
     except Exception as e:
         # Log the error but don't fail the task deletion
         print(f"Error publishing task deletion event: {str(e)}")
@@ -382,7 +500,7 @@ def toggle_task_completion(
     session.add(db_task)
     session.commit()
     session.refresh(db_task)
-    
+
     # Publish task completion event to Kafka
     try:
         task_data = {
@@ -401,115 +519,20 @@ def toggle_task_completion(
             "recurrence_interval": db_task.recurrence_interval,
             "parent_task_id": db_task.parent_task_id
         }
-        
+
         # Determine event type based on completion status change
         event_type = "completed" if db_task.completed else "uncompleted"
         publish_task_event(task_data, event_type)
         publish_task_update_event(user_id, task_data, event_type)
-        
+
         # If the task is completed and has recurrence, the recurring task service will handle creating the next occurrence
         if db_task.completed and db_task.recurrence_pattern:
             print(f"Task {db_task.id} completed and has recurrence pattern '{db_task.recurrence_pattern}'. Recurring task service will create next occurrence.")
+        
+        # Notify user via WebSocket about the task completion status change
+        asyncio.create_task(notify_user_task_change(user_id, task_data, event_type))
     except Exception as e:
         # Log the error but don't fail the task completion
         print(f"Error publishing task completion event: {str(e)}")
-    
+
     return db_task
-
-
-@router.get("/tasks/filtered", response_model=List[TaskPublic])
-def get_filtered_tasks(
-    user_id: str,
-    current_user_id: str = Depends(get_current_user),
-    session: Session = Depends(get_session),
-    priority: Optional[str] = None,
-    tags: Optional[str] = None,  # Comma-separated tags
-    status: Optional[str] = None,  # all, pending, completed
-    due_after: Optional[str] = None,  # ISO format date string
-    due_before: Optional[str] = None,  # ISO format date string
-    sort_by: Optional[str] = "created_at",  # due_date, priority, created_date, title
-    sort_order: Optional[str] = "desc"  # asc, desc
-):
-    """
-    Retrieve filtered and sorted tasks for the specified user.
-
-    Args:
-        user_id: The ID of the user whose tasks to retrieve
-        current_user_id: The ID of the currently authenticated user (from JWT)
-        session: Database session
-        priority: Filter by priority (high, medium, low)
-        tags: Filter by tags (comma-separated)
-        status: Filter by status (all, pending, completed)
-        due_after: Filter tasks with due date after this date (ISO format)
-        due_before: Filter tasks with due date before this date (ISO format)
-        sort_by: Sort by field (due_date, priority, created_date, title)
-        sort_order: Sort order (asc, desc)
-
-    Returns:
-        List[TaskPublic]: A list of tasks matching the filters
-
-    Raises:
-        HTTPException: If the user_id in URL doesn't match the authenticated user
-    """
-    # Verify that the requested user_id matches the authenticated user_id
-    if user_id != current_user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied: Cannot access another user's tasks"
-        )
-
-    # Build the query with filters
-    statement = select(Task).where(Task.user_id == user_id)
-
-    # Apply priority filter
-    if priority:
-        statement = statement.where(Task.priority == priority)
-
-    # Apply status filter
-    if status and status != "all":
-        if status == "pending":
-            statement = statement.where(Task.completed == False)
-        elif status == "completed":
-            statement = statement.where(Task.completed == True)
-
-    # Apply due date range filters
-    if due_after:
-        due_after_dt = datetime.fromisoformat(due_after.replace('Z', '+00:00'))
-        statement = statement.where(Task.due_date >= due_after_dt)
-
-    if due_before:
-        due_before_dt = datetime.fromisoformat(due_before.replace('Z', '+00:00'))
-        statement = statement.where(Task.due_date <= due_before_dt)
-
-    # Apply tags filter (simplified - in a real implementation, you'd need to handle JSON arrays properly)
-    if tags:
-        tag_list = tags.split(',')
-        # This is a simplified approach - in reality, you'd need to handle JSON array matching
-        for tag in tag_list:
-            statement = statement.where(Task.tags.contains(tag.strip()))
-
-    # Apply sorting
-    if sort_by == "due_date":
-        if sort_order == "asc":
-            statement = statement.order_by(Task.due_date.asc())
-        else:
-            statement = statement.order_by(Task.due_date.desc())
-    elif sort_by == "priority":
-        if sort_order == "asc":
-            statement = statement.order_by(Task.priority.asc())
-        else:
-            statement = statement.order_by(Task.priority.desc())
-    elif sort_by == "title":
-        if sort_order == "asc":
-            statement = statement.order_by(Task.title.asc())
-        else:
-            statement = statement.order_by(Task.title.desc())
-    else:  # Default to created_at
-        if sort_order == "asc":
-            statement = statement.order_by(Task.created_at.asc())
-        else:
-            statement = statement.order_by(Task.created_at.desc())
-
-    # Execute the query
-    tasks = session.exec(statement).all()
-    return tasks

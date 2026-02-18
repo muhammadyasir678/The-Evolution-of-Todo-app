@@ -35,7 +35,7 @@ class Task(TaskBase, table=True):
     priority: Optional[str] = Field(default="medium", sa_column=Column(saEnum("high", "medium", "low", name="priority_enum")))
     tags: Optional[str] = Field(default=None)  # Stored as JSON string
     due_date: Optional[datetime] = Field(default=None)
-    reminder_time: Optional[datetime] = Field(default=None)
+    reminder_time: Optional[datetime] = Field(None)
     recurrence_pattern: Optional[str] = Field(default=None, sa_column=Column(saEnum("daily", "weekly", "monthly", name="recurrence_enum")))  # daily, weekly, monthly
     recurrence_interval: Optional[int] = Field(default=None)  # e.g., every 2 weeks
     parent_task_id: Optional[int] = Field(default=None, foreign_key="task.id")
@@ -115,3 +115,41 @@ class TaskPublic(TaskBase):
     recurrence_pattern: Optional[str] = None
     recurrence_interval: Optional[int] = None
     parent_task_id: Optional[int] = None
+
+
+class MessageCreate(SQLModel):
+    """
+    Schema for creating a new message.
+    """
+    conversation_id: int
+    role: str = Field(sa_column=Column(saEnum("user", "assistant", name="message_role"), nullable=False))
+    content: str = Field(max_length=10000)
+
+
+class MessagePublic(SQLModel):
+    """
+    Public schema for message representation in API responses.
+    """
+    id: int
+    user_id: str
+    conversation_id: int
+    role: str
+    content: str
+    created_at: datetime
+
+
+class ConversationCreate(SQLModel):
+    """
+    Schema for creating a new conversation.
+    """
+    user_id: str
+
+
+class ConversationPublic(SQLModel):
+    """
+    Public schema for conversation representation in API responses.
+    """
+    id: int
+    user_id: str
+    created_at: datetime
+    updated_at: datetime
