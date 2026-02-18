@@ -17,6 +17,7 @@ interface WebSocketProviderProps {
 
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children, userId }) => {
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [isConnected, setIsConnected] = useState(false);
   const webSocketService = WebSocketService.getInstance();
 
   useEffect(() => {
@@ -25,7 +26,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children, 
 
     // Update connection status
     const updateStatus = () => {
-      setConnectionStatus(webSocketService.getConnectionStatus());
+      const status = webSocketService.getConnectionStatus();
+      setConnectionStatus(status);
+      setIsConnected(webSocketService.isConnected());
     };
 
     // Update status initially and whenever it changes
@@ -41,8 +44,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children, 
   }, [userId]);
 
   const value = {
-    isConnected: webSocketService.isConnected(),
-    connectionStatus: webSocketService.getConnectionStatus(),
+    isConnected,
+    connectionStatus,
   };
 
   return (

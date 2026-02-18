@@ -95,6 +95,33 @@ export const taskApi = {
       body: JSON.stringify({ completed }),
     });
   },
+
+  // Get filtered and sorted tasks
+  getFilteredTasks: async (
+    userId: string,
+    priority?: string,
+    tags?: string,
+    status?: string,
+    dueAfter?: string,
+    dueBefore?: string,
+    sortBy: string = 'created_at',
+    sortOrder: string = 'desc'
+  ): Promise<ApiResponse<Task[]>> => {
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (priority) params.append('priority', priority);
+    if (tags) params.append('tags', tags);
+    if (status) params.append('status', status);
+    if (dueAfter) params.append('due_after', dueAfter);
+    if (dueBefore) params.append('due_before', dueBefore);
+    params.append('sort_by', sortBy);
+    params.append('sort_order', sortOrder);
+
+    const queryString = params.toString();
+    const endpoint = `/api/${userId}/tasks/filtered${queryString ? `?${queryString}` : ''}`;
+    
+    return apiRequest<Task[]>(endpoint);
+  },
 };
 
 // Export the API functions

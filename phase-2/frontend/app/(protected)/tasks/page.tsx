@@ -12,6 +12,7 @@ const TasksPage = () => {
   const [session, setSession] = useState<{ user: { id: string; email: string; name?: string } } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     // This ensures the effect only runs on the client side
@@ -97,21 +98,26 @@ const TasksPage = () => {
   // Use the actual user ID from the session data
   const actualUserId = session.user.id;
 
+  const handleTaskCreated = () => {
+    // Trigger a refresh of the task list
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <WebSocketProvider userId={actualUserId}>
       <div className="min-h-screen bg-gray-50">
         <Header userEmail={session.user.email} userName={session.user.name} />
 
         <main className="container mx-auto px-4 py-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Tasks</h1>
 
             <TaskForm
               userId={actualUserId}
-              onTaskCreated={() => {}}
+              onTaskCreated={handleTaskCreated}
             />
 
-            <TaskList userId={actualUserId} />
+            <TaskList key={`task-list-${refreshTrigger}`} userId={actualUserId} />
           </div>
         </main>
       </div>

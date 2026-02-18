@@ -3,6 +3,9 @@
  * Test end-to-end functionality: natural language input → API call → MCP tools → response
  */
 
+// Add Jest type definitions
+/// <reference types="jest" />
+
 // Mock the API functions
 jest.mock('../lib/chatApi', () => ({
   sendMessage: jest.fn()
@@ -11,6 +14,13 @@ jest.mock('../lib/chatApi', () => ({
 import { sendMessage } from '../lib/chatApi';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { ChatInterface } from '../components/ChatInterface';
+
+// Define the expected response type
+interface ChatResponse {
+  conversation_id: number;
+  response: string;
+  tool_calls: string[];
+}
 
 describe('Natural Language Command Tests - Tasks T090-T095', () => {
   beforeEach(() => {
@@ -21,7 +31,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
    * Task T091: "Add a task to buy milk" → add_task invoked and confirmed
    */
   test('should invoke add_task when user adds a task', async () => {
-    const mockResponse = {
+    const mockResponse: ChatResponse = {
       conversation_id: 123,
       response: "I've added 'buy milk' to your tasks.",
       tool_calls: ["add_task"]
@@ -30,7 +40,6 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
     (sendMessage as jest.MockedFunction<typeof sendMessage>)
       .mockResolvedValue(mockResponse);
 
-    // Simulate sending the message
     const result = await sendMessage({
       conversation_id: null,
       message: "Add a task to buy milk",
@@ -51,7 +60,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
    * Task T092: "Show me all my tasks" → list_tasks invoked and displayed
    */
   test('should invoke list_tasks when user requests to see tasks', async () => {
-    const mockResponse = {
+    const mockResponse: ChatResponse = {
       conversation_id: 123,
       response: "You have 2 tasks: 1. Buy milk (pending), 2. Call doctor (pending)",
       tool_calls: ["list_tasks"]
@@ -80,7 +89,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
    * Task T093: "Mark task 1 as complete" → complete_task invoked and confirmed
    */
   test('should invoke complete_task when user marks task as complete', async () => {
-    const mockResponse = {
+    const mockResponse: ChatResponse = {
       conversation_id: 123,
       response: "Task 1 has been marked as complete.",
       tool_calls: ["complete_task"]
@@ -109,7 +118,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
    * Task T094: "Delete task 2" → delete_task invoked and confirmed
    */
   test('should invoke delete_task when user requests to delete a task', async () => {
-    const mockResponse = {
+    const mockResponse: ChatResponse = {
       conversation_id: 123,
       response: "Task 2 has been deleted.",
       tool_calls: ["delete_task"]
@@ -138,7 +147,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
    * Task T095: "Change task 3 title" → update_task invoked and confirmed
    */
   test('should invoke update_task when user requests to change task title', async () => {
-    const mockResponse = {
+    const mockResponse: ChatResponse = {
       conversation_id: 123,
       response: "Task 3 has been updated with the new title.",
       tool_calls: ["update_task"]
@@ -176,7 +185,7 @@ describe('Natural Language Command Tests - Tasks T090-T095', () => {
     ];
 
     for (const command of commands) {
-      const mockResponse = {
+      const mockResponse: ChatResponse = {
         conversation_id: 123,
         response: `Processed: ${command}`,
         tool_calls: ["add_task"] // Simplified for testing

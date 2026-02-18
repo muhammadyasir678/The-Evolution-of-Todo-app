@@ -2,22 +2,27 @@
 import React, { useState } from 'react';
 
 interface TaskTagsProps {
-  tags: string[];
-  onChange: (tags: string[]) => void;
+  tags: string;
+  onChange: (tags: string) => void;
 }
 
 const TaskTags: React.FC<TaskTagsProps> = ({ tags, onChange }) => {
   const [inputValue, setInputValue] = useState('');
 
+  // Convert comma-separated string to array for display
+  const tagsArray = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+
   const addTag = () => {
-    if (inputValue.trim() && !tags.includes(inputValue.trim())) {
-      onChange([...tags, inputValue.trim()]);
+    if (inputValue.trim() && !tagsArray.includes(inputValue.trim())) {
+      const newTagsArray = [...tagsArray, inputValue.trim()];
+      onChange(newTagsArray.join(','));
       setInputValue('');
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    onChange(tags.filter(tag => tag !== tagToRemove));
+    const newTagsArray = tagsArray.filter(tag => tag !== tagToRemove);
+    onChange(newTagsArray.join(','));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -31,7 +36,7 @@ const TaskTags: React.FC<TaskTagsProps> = ({ tags, onChange }) => {
     <div className="flex flex-col">
       <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
       <div className="flex flex-wrap gap-2 mb-2">
-        {tags.map((tag, index) => (
+        {tagsArray.map((tag, index) => (
           <span
             key={index}
             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"

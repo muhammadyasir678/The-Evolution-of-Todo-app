@@ -2,11 +2,11 @@
 import React from 'react';
 
 interface TaskPriorityProps {
-  priority: string;
-  onChange: (priority: string) => void;
+  priority: 'high' | 'medium' | 'low';
+  setPriority: (priority: 'high' | 'medium' | 'low') => void;
 }
 
-const TaskPriority: React.FC<TaskPriorityProps> = ({ priority, onChange }) => {
+const TaskPriority: React.FC<TaskPriorityProps> = ({ priority, setPriority }) => {
   const priorities = [
     { value: 'low', label: 'Low', color: 'text-blue-600 bg-blue-100' },
     { value: 'medium', label: 'Medium', color: 'text-yellow-600 bg-yellow-100' },
@@ -26,7 +26,7 @@ const TaskPriority: React.FC<TaskPriorityProps> = ({ priority, onChange }) => {
                 ? `${p.color} ring-2 ring-offset-2 ring-${p.value === 'high' ? 'red' : p.value === 'medium' ? 'yellow' : 'blue'}-500`
                 : `${p.color.replace('bg-', 'bg-opacity-50 bg-').replace('text-', 'text-opacity-70 text-')}`
             }`}
-            onClick={() => onChange(p.value)}
+            onClick={() => setPriority(p.value as 'high' | 'medium' | 'low')}
           >
             {p.label}
           </button>

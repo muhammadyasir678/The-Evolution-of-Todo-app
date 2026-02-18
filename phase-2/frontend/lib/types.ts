@@ -8,6 +8,13 @@ export interface Task {
   completed: boolean;
   created_at: string;
   updated_at: string;
+  due_date?: string | null;
+  reminder_time?: string | null;
+  priority?: string;
+  tags?: string;  // Comma-separated string
+  recurrence_pattern?: string | null;
+  recurrence_interval?: number | null;
+  parent_task_id?: number | null;
 }
 
 export interface CreateUserRequest {
@@ -19,12 +26,26 @@ export interface CreateUserRequest {
 export interface CreateTaskRequest {
   title: string;
   description?: string;
+  due_date?: string | null;
+  reminder_time?: string | null;
+  priority?: string;
+  tags?: string;  // Comma-separated string
+  recurrence_pattern?: string | null;
+  recurrence_interval?: number | null;
+  parent_task_id?: number | null;
 }
 
 export interface UpdateTaskRequest {
   title?: string;
   description?: string;
   completed?: boolean;
+  due_date?: string | null;
+  reminder_time?: string | null;
+  priority?: string;
+  tags?: string;  // Comma-separated string
+  recurrence_pattern?: string | null;
+  recurrence_interval?: number | null;
+  parent_task_id?: number | null;
 }
 
 export interface ApiResponse<T> {

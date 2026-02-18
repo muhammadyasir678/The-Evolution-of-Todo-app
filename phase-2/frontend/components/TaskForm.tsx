@@ -17,6 +17,12 @@ interface TaskFormProps {
 const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState<'high' | 'medium' | 'low'>('medium');
+  const [tags, setTags] = useState<string>('');
+  const [dueDate, setDueDate] = useState<string | null>(null);
+  const [reminderTime, setReminderTime] = useState<string | null>(null);
+  const [recurrencePattern, setRecurrencePattern] = useState<string>('');
+  const [recurrenceInterval, setRecurrenceInterval] = useState<number>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const webSocketService = WebSocketService.getInstance();
@@ -43,31 +49,64 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
     setError(null);
 
     try {
-      const taskData: CreateTaskRequest = {
+      const taskData: any = {
         title: title.trim(),
         description: description.trim() || undefined,
+        priority,
+        tags: tags || undefined, // tags is already a comma-separated string
+        due_date: dueDate || undefined,
+        reminder_time: reminderTime || undefined,
+        recurrence_pattern: recurrencePattern || undefined,
+        recurrence_interval: recurrenceInterval || undefined,
       };
 
       const result = await taskApi.createTask(userId, taskData);
 
       if (result.error) {
-        setError(result.error);
+        // Handle both string and object errors
+        if (typeof result.error === 'string') {
+          setError(result.error);
+        } else if (typeof result.error === 'object' && result.error !== null) {
+          // If it's an object, try to extract a meaningful message
+          if ('message' in result.error) {
+            setError((result.error as any).message as string);
+          } else if ('detail' in result.error) {
+            setError((result.error as any).detail as string);
+          } else {
+            setError(JSON.stringify(result.error));
+          }
+        } else {
+          setError('An unknown error occurred');
+        }
       } else {
         // Reset form
         setTitle('');
         setDescription('');
-        // Notify parent component
-        // The backend will emit a WebSocket event, which will be handled by TaskList
-        // We don't need to do anything here as the TaskList component handles WebSocket events
+        setPriority('medium');
+        setTags('');
+        setDueDate(null);
+        setReminderTime(null);
+        setRecurrencePattern('');
+        setRecurrenceInterval(1);
+
+        // Notify parent component to refresh tasks
         onTaskCreated();
       }
-    } catch (err) {
-      setError('Failed to create task');
+    } catch (err: any) {
+      // Handle both string and object errors
+      if (typeof err === 'string') {
+        setError(err);
+      } else if (typeof err === 'object' && err !== null && 'message' in err) {
+        setError(err.message as string);
+      } else {
+        setError('Failed to create task');
+      }
       console.error('Task creation error:', err);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -116,6 +155,48 @@ const TaskForm: React.FC<TaskFormProps> = ({ userId, onTaskCreated }) => {
           <p className="mt-1 text-xs text-gray-500">
             {description.length}/1000 characters
           </p>
+        </div>
+
+        {/* Priority Selection */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Priority
+          </label>
+          <TaskPriority priority={priority} setPriority={setPriority} />
+        </div>
+
+        {/* Tags Input */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Tags
+          </label>
+          <TaskTags tags={tags} onChange={setTags} />
+        </div>
+
+        {/* Due Date and Reminder */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Due Date and Reminder
+          </label>
+          <TaskDueDate
+            dueDate={dueDate}
+            reminderTime={reminderTime}
+            onDueDateChange={setDueDate}
+            onReminderChange={setReminderTime}
+          />
+        </div>
+
+        {/* Recurrence Pattern */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Recurrence
+          </label>
+          <TaskRecurrence
+            recurrencePattern={recurrencePattern}
+            recurrenceInterval={recurrenceInterval}
+            onPatternChange={setRecurrencePattern}
+            onIntervalChange={setRecurrenceInterval}
+          />
         </div>
 
         <button

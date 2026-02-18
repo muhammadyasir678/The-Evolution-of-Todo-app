@@ -16,7 +16,7 @@ const SignInPage = () => {
 
     try {
       // Call the backend API for sign in
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://muhammadyasir786-backend.hf.space';
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://huggingface.co/spaces/Muhammadyasir786/backend';
       const fullUrl = `${BACKEND_URL}/auth/signin`;
 
       console.log('Making sign in request to:', fullUrl); // Debug log
