@@ -13,7 +13,15 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
 
 # Synchronous engine for operations
-sync_engine = create_engine(DATABASE_URL)
+# Configure engine with proper SSL settings for Neon
+sync_engine = create_engine(
+    DATABASE_URL,
+    connect_args={
+        "sslmode": "require",
+        # Remove channel_binding if it causes issues
+        # "channel_binding": "require"  # Commenting out as it might cause connection issues
+    } if DATABASE_URL.startswith("postgresql://") else {}
+)
 
 def get_session() -> Generator[Session, None, None]:
     """
